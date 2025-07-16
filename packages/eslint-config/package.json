@@ -1,0 +1,26 @@
+{
+  "name": "@cavs/eslint-config",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/node": "^22.14.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.36.0",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
