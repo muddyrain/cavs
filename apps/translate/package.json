@@ -16,12 +16,18 @@
     "tailwindcss": "3.4.1"
   },
   "devDependencies": {
+    "@cavs/eslint-config": "workspace:*",
+    "@eslint/js": "^9.31.0",
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
     "@types/chrome": "0.0.258",
+    "@types/md5": "^2.3.5",
     "@types/node": "20.11.5",
-    "@types/react": "18.2.48",
-    "@types/react-dom": "18.2.18",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
     "autoprefixer": "catalog:",
+    "eslint": "catalog:",
+    "lucide-react": "^0.488.0",
+    "md5": "^2.3.0",
     "postcss": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"

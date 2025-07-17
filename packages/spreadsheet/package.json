@@ -72,7 +72,9 @@
     "vite": "^6.3.1",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.4",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "@cavs/eslint-config": "workspace:*",
+    "@cavs/ts-config": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0",

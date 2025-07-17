@@ -1,13 +1,12 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
 
-# Define a catalog of version ranges.
 catalog:
+  autoprefixer: 10.4.21
   eslint: 9.22.0
   postcss: 8.4.47
-  autoprefixer: 10.4.21
   prettier: 3.5.3
-  typescript: 5.8.3
   react: 19.0.0
   react-dom: 19.0.0
+  typescript: 5.8.3

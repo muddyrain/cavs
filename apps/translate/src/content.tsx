@@ -1,8 +1,8 @@
+/* eslint-disable react-refresh/only-export-components */
 import TIcon from "@/assets/t.png"
 import cssText from "data-text:@/style.css"
 import type { PlasmoCSConfig } from "plasmo"
-import { useEffect, useState } from "react"
-
+import { useEffect, useRef, useState } from "react"
 import { Translate } from "./components/translate"
 
 export const config: PlasmoCSConfig = {
@@ -43,6 +43,7 @@ const PlasmoOverlay = () => {
   const [visibleTranslate, setVisibleTranslate] = useState(false)
   const [text, setText] = useState("")
   const [pagePosition, setPagePosition] = useState({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
   const cleanStatus = () => {
     setText("")
     setVisibleIcon(false)
@@ -82,21 +83,21 @@ const PlasmoOverlay = () => {
     e.stopPropagation()
     setVisibleTranslate(true)
   }
-
-  if (!visibleIcon || !text) {
+  if (!visibleIcon) {
     return null
   }
   return (
     <div
-      style={{ left: pagePosition.x, top: pagePosition.y, userSelect: "none" }}
+      ref={containerRef}
+      style={{ left: pagePosition.x, top: pagePosition.y }}
       className="z-9999999999 absolute flex"
       onClick={handleTranslate}
       onMouseDown={(e) => e.stopPropagation()}
       onMouseUp={(e) => e.stopPropagation()}>
       {visibleTranslate ? (
-        <Translate />
+        <Translate text={text} />
       ) : (
-        <div className="w-5 h-5 bg-purple-200 p-1 rounded-xs shadow-xs shadow-purple-400">
+        <div className="w-5 h-5 bg-purple-200 p-1 rounded-sm shadow-xs shadow-purple-400">
           <img
             className="cursor-pointer duration-300 hover:opacity-75"
             src={TIcon}

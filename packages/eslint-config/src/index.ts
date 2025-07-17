@@ -4,10 +4,10 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint, { ConfigArray } from 'typescript-eslint'
 
-export const eslintConfig: ConfigArray = tseslint.config(
-  { ignores: ['dist'] },
+const eslintConfig: ConfigArray = [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -29,10 +29,12 @@ export const eslintConfig: ConfigArray = tseslint.config(
           vars: "all",
           args: "after-used",
           ignoreRestSiblings: false,
-          argsIgnorePattern: "^_", // 忽略以 _ 开头的参数
-          varsIgnorePattern: "^_", // 忽略以 _ 开头的变量
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
         },
       ],
     },
-  },
-)
+  }
+]
+
+export default eslintConfig
