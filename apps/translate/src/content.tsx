@@ -1,7 +1,9 @@
-import cssText from "data-text:~style.css"
+import TIcon from "@/assets/t.png"
+import cssText from "data-text:@/style.css"
 import type { PlasmoCSConfig } from "plasmo"
 import { useEffect, useState } from "react"
-import TIcon from "@/assets/t.png"
+
+import { Translate } from "./components/translate"
 
 export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"]
@@ -37,48 +39,71 @@ export const getStyle = (): HTMLStyleElement => {
 }
 
 const PlasmoOverlay = () => {
-  const [visible, setVisible] = useState(false)
+  const [visibleIcon, setVisibleIcon] = useState(false)
+  const [visibleTranslate, setVisibleTranslate] = useState(false)
   const [text, setText] = useState("")
   const [pagePosition, setPagePosition] = useState({ x: 0, y: 0 })
+  const cleanStatus = () => {
+    setText("")
+    setVisibleIcon(false)
+    setPagePosition({ x: 0, y: 0 })
+    setVisibleTranslate(false)
+  }
   useEffect(() => {
-    const handleMouseUp = (e) => {
+    const handleMouseDown = () => {
+      cleanStatus()
       const selection = window.getSelection()
-      console.log("up");
+      if (selection && selection.rangeCount > 0) {
+        selection.removeAllRanges()
+      }
+    }
+    const handleMouseUp = (e: MouseEvent) => {
+      const selection = window.getSelection()
       if (!selection || selection.rangeCount === 0) {
         return
       }
       const text = selection.toString().trim()
       if (text.length > 0) {
         setText(text)
-        setVisible(true)
+        setVisibleIcon(true)
         setPagePosition({ x: e.pageX + 5, y: e.pageY + 5 })
       } else {
-        setText("")
-        setVisible(false)
-        setPagePosition({ x: 0, y: 0 })
+        cleanStatus()
       }
     }
+    window.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mouseup", handleMouseUp)
     return () => {
+      window.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
     }
   })
   const handleTranslate = (e: React.MouseEvent) => {
     e.stopPropagation()
+    setVisibleTranslate(true)
   }
 
-  if (!visible) {
+  if (!visibleIcon || !text) {
     return null
   }
   return (
     <div
       style={{ left: pagePosition.x, top: pagePosition.y, userSelect: "none" }}
-      className="plasmo-z-[9999999999] plasmo-absolute plasmo-flex plasmo-w-5 plasmo-h-5 plasmo-bg-purple-200 plasmo-p-1 plasmo-rounded-sm plasmo-shadow-sm plasmo-shadow-purple-400"
+      className="z-9999999999 absolute flex"
       onClick={handleTranslate}
-      onMouseDown={e => e.stopPropagation()}
-      onMouseUp={e => e.stopPropagation()}
-    >
-      <img className=" plasmo-cursor-pointer plasmo-duration-300 hover:plasmo-opacity-75" src={TIcon} alt="icon" />
+      onMouseDown={(e) => e.stopPropagation()}
+      onMouseUp={(e) => e.stopPropagation()}>
+      {visibleTranslate ? (
+        <Translate />
+      ) : (
+        <div className="w-5 h-5 bg-purple-200 p-1 rounded-xs shadow-xs shadow-purple-400">
+          <img
+            className="cursor-pointer duration-300 hover:opacity-75"
+            src={TIcon}
+            alt="icon"
+          />
+        </div>
+      )}
     </div>
   )
 }
