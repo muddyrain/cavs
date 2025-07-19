@@ -6,7 +6,7 @@ app.use(async (ctx) => {
   ctx.body = 'Hello Koa2 + TypeScript!';
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3010;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
