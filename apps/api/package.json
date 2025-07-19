@@ -12,11 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^24.0.15",
-    "@vercel/postgres": "^0.7.2",
     "dotenv": "^16.4.1",
     "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "body-parser": "^2.2.0"
   }
 }
