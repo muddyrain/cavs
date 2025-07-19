@@ -4,18 +4,19 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node index.ts"
+    "start": "node api/index.ts",
+    "deploy:prod": "vercel --prod"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.15",
+    "@vercel/postgres": "^0.7.2",
     "dotenv": "^16.4.1",
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "@types/node": "^24.0.15",
     "body-parser": "^2.2.0"
   }
 }

@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+const { sql } = require('@vercel/postgres');
 
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -15,11 +16,6 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-app.get('/api', function (req, res) {
-    res.send('API Endpoint');
-});
+app.listen(3000, () => console.log('Server ready on port 3000.'));
 
-
-app.listen(3000, () => console.log('Server ready on http://localhost:3000'));
-
-module.exports = app;
+module.exports = app;   
