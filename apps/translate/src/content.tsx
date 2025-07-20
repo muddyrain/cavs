@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import TIcon from "@/assets/t.png"
+import TIcon from "../assets/icon.png"
 import cssText from "data-text:@/style.css"
 import type { PlasmoCSConfig } from "plasmo"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Translate } from "./components/translate"
 
 export const config: PlasmoCSConfig = {
@@ -95,7 +95,9 @@ const PlasmoOverlay = () => {
       onMouseDown={(e) => e.stopPropagation()}
       onMouseUp={(e) => e.stopPropagation()}>
       {visibleTranslate ? (
-        <Translate text={text} />
+        <Translate isAutoTranslate text={text} onClose={() => {
+          cleanStatus()
+        }} />
       ) : (
         <div className="w-5 h-5 bg-purple-200 p-1 rounded-sm shadow-xs shadow-purple-400">
           <img

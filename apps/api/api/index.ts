@@ -3,6 +3,12 @@ import express from 'express';
 import md5 from './md5';
 import axios from 'axios';
 const app = express();
+// 添加跨域支持
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.get('/api/translate/baidu', function (req: express.Request, res: express.Response) {
     const appid = '20250717002409267';

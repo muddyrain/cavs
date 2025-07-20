@@ -1,12 +1,10 @@
-import { CountButton } from "@/features/count-button"
-
 import "@/style.css"
+import { Translate } from "./components/translate"
+import React from "react"
 
 function IndexPopup() {
   return (
-    <div className="plasmo-flex plasmo-items-center plasmo-justify-center plasmo-h-16 plasmo-w-40">
-      <CountButton />
-    </div>
+    <Translate isShowClose={false} text={''} />
   )
 }
 
