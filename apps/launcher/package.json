@@ -2,11 +2,10 @@
   "name": "launcher",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "main": "./electron/main.cjs",
+  "main": "dist/main.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-    "build": "tsc -b && vite build",
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && tsc -p ./electron/tsconfig.json && electron .\"",
+    "build": "tsc --noEmit && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -18,6 +17,7 @@
     "@cavs/eslint-config": "workspace:*",
     "@cavs/ts-config": "workspace:*",
     "@eslint/js": "^9.30.1",
+    "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
@@ -26,10 +26,13 @@
     "eslint": "^9.30.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "file-icon": "^5.1.1",
     "globals": "^16.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4",
-    "wait-on": "^8.0.4"
+    "wait-on": "^8.0.4",
+    "windows-shortcuts": "^0.1.6"
   }
 }
