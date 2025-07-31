@@ -3,6 +3,8 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint, { ConfigArray } from 'typescript-eslint'
+import prettierPlugin from 'eslint-plugin-prettier'
+import prettierConfig from 'eslint-config-prettier'
 
 const eslintConfig: ConfigArray = [
   js.configs.recommended,
@@ -16,6 +18,7 @@ const eslintConfig: ConfigArray = [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'prettier': prettierPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -33,8 +36,10 @@ const eslintConfig: ConfigArray = [
           varsIgnorePattern: "^_",
         },
       ],
+      "prettier/prettier": "error", // 启用 Prettier 检查
     },
-  }
+  },
+  prettierConfig
 ]
 
 export default eslintConfig

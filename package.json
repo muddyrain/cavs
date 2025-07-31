@@ -1,22 +1,26 @@
 {
-  "name": "cavs",
-  "private": true,
-  "description": "Monorepo for CAVS projects",
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
-  },
-  "devDependencies": {
-    "prettier": "catalog:",
-    "turbo": "^2.5.4",
-    "typescript": "5.8.3",
-    "@types/node": "^24.0.15"
-  },
-  "packageManager": "pnpm@10.13.1",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "cavs",
+	"private": true,
+	"description": "Monorepo for CAVS projects",
+	"type": "module",
+	"scripts": {
+		"build": "turbo run build",
+		"check-types": "turbo run check-types",
+		"dev": "turbo run dev",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"lint": "turbo run lint"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.3",
+		"prettier": "catalog:",
+		"prettier-plugin-packagejson": "^2.5.19",
+		"turbo": "^2.5.4",
+		"typescript": "catalog:"
+	},
+	"packageManager": "pnpm@10.13.1",
+	"engines": {
+		"node": ">=18"
+	}
 }

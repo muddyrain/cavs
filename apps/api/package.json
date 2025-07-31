@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^24.0.15",
+    "@types/node": "catalog:",
     "dotenv": "^16.4.1",
     "express": "^4.18.2"
   },
