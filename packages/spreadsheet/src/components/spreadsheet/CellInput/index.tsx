@@ -1,4 +1,4 @@
-import { CellInput, CellInputActionsType } from "./CellInput";
+import { CellInput, CellInputActionsType } from "./CellInput"
 
-export { CellInput };
-export type { CellInputActionsType };
+export { CellInput }
+export type { CellInputActionsType }

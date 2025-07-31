@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --noEmit && vite build",
 		"dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && tsc -p ./electron/tsconfig.json && electron .\"",
-		"lint": "eslint .",
+		"lint": "eslint . --fix",
 		"preview": "vite preview"
 	},
 	"dependencies": {

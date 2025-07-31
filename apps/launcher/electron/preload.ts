@@ -1,5 +1,5 @@
-const { contextBridge, ipcRenderer } = require('electron');
+import { contextBridge, ipcRenderer } from "electron"
 
-contextBridge.exposeInMainWorld('launcherAPI', {
-  getShortcuts: () => ipcRenderer.invoke('get-shortcuts'),
-});
+contextBridge.exposeInMainWorld("launcherAPI", {
+	getShortcuts: () => ipcRenderer.invoke("get-shortcuts")
+})

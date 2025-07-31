@@ -14,8 +14,8 @@
 		"build": "tsc && vite build --mode production",
 		"build:dev": "vite build --mode development",
 		"dev": "vite build --mode development --watch",
-		"format": "npx prettier --write \"src/**/*.+(cjs|js|ts|jsx|tsx)\"",
-		"lint": "eslint \"src/**/*.+(cjs|js|ts|jsx|tsx)\"",
+		"format": "npx prettier --write \"src/**/*.+(cjs|js|ts|jsx|tsx)\" --fix",
+		"lint": "eslint \"src/**/*.+(cjs|js|ts|jsx|tsx)\" --fix",
 		"preview": "vite preview"
 	},
 	"dependencies": {

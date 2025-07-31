@@ -1,3 +1,3 @@
-import Spreadsheet from "./components/spreadsheet";
+import Spreadsheet from "./components/spreadsheet"
 
 export { Spreadsheet }
