@@ -5,14 +5,15 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo run build",
+		"changeset": "changeset",
 		"check-types": "turbo run check-types",
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"lint": "turbo run lint",
+		"publish": "changeset publish",
 		"rm_modules": "bash remove_modules.sh",
-		"changeset": "changeset",
-		"version": "changeset version && turbo run build",
-		"publish": "changeset publish"
+		"test": "turbo run test",
+		"version": "changeset version && turbo run build"
 	},
 	"config": {
 		"commitizen": {
