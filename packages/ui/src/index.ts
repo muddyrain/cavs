@@ -1,3 +1,3 @@
-import "./index.css"
+import "./index.css";
 
-export * from "@/components/ui/select"
+export * from "@/components/ui/select";
