@@ -9,7 +9,10 @@
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"lint": "turbo run lint",
-		"rm_modules": "bash remove_modules.sh"
+		"rm_modules": "bash remove_modules.sh",
+		"changeset": "changeset",
+		"version": "changeset version && turbo run build",
+		"publish": "changeset publish"
 	},
 	"config": {
 		"commitizen": {
@@ -17,6 +20,7 @@
 		}
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.29.5",
 		"@types/node": "catalog:",
 		"commitizen": "^4.3.1",
 		"cz-conventional-changelog": "^3.3.0",
