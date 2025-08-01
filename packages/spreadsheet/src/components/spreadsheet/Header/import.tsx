@@ -1,3 +1,4 @@
+import { ImportIcon } from "lucide-react"
 import { FC } from "react"
 import {
 	Dialog,
@@ -7,10 +8,9 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from "@/components/ui/dialog"
-import { Tooltip } from "@/components/ui/tooltip"
-import { Toggle } from "@/components/ui/toggle"
-import { ImportIcon } from "lucide-react"
 import { FileUpload } from "@/components/ui/file-upload"
+import { Toggle } from "@/components/ui/toggle"
+import { Tooltip } from "@/components/ui/tooltip"
 export const Import: FC = () => {
 	return (
 		<Tooltip content={"导入表格"}>

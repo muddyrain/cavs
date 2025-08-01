@@ -1,7 +1,8 @@
-import { FC, ReactNode, memo } from "react"
-import { Tooltip as TooltipRoot, TooltipContent, TooltipTrigger } from "./tooltip.tsx"
-import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import * as React from "react"
+import { FC, memo, ReactNode } from "react"
+import { TooltipContent, Tooltip as TooltipRoot, TooltipTrigger } from "./tooltip.tsx"
+
 type ContentType = React.ComponentProps<typeof TooltipPrimitive.Content>
 const TooltipInner: FC<
 	{

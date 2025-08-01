@@ -69,7 +69,7 @@ export function pxToPt(px: number | string): number {
 	return pxValue * 0.75
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function measurePerformance<T extends (...args: any[]) => any>(
 	fn: T,
 	name: string

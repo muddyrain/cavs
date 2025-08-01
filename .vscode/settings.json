@@ -1,9 +1,13 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
-  "editor.formatOnSave": true,
-  "editor.tabSize": 2
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		}
+	],
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit"
+	}
 }

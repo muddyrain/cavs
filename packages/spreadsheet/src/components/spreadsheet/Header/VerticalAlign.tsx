@@ -1,16 +1,16 @@
+import {
+	AlignVerticalJustifyCenterIcon,
+	AlignVerticalJustifyEndIcon,
+	AlignVerticalJustifyStartIcon,
+	ChevronDownIcon
+} from "lucide-react"
 import { FC } from "react"
 import {
 	DropdownMenu,
-	DropdownMenuContent,
 	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import {
-	AlignVerticalJustifyStartIcon,
-	AlignVerticalJustifyCenterIcon,
-	AlignVerticalJustifyEndIcon,
-	ChevronDownIcon
-} from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Tooltip } from "@/components/ui/tooltip"
 import { ClickType } from "@/hooks/useUpdateStyle"

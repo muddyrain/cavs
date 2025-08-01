@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
-import { useStore } from "./useStore"
-import { useComputed } from "./useComputed"
 import { MergeSpanType } from "@/types/sheet"
+import { useComputed } from "./useComputed"
+import { useStore } from "./useStore"
 
 export const useTab = () => {
 	const {
@@ -175,6 +175,7 @@ export const useTab = () => {
 		isFindAlreadySelected,
 		fitCellViewPort
 	])
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		setAlreadySelectedCell(() => [])
 	}, [selection])

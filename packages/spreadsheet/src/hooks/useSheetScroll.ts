@@ -1,5 +1,5 @@
+import { useCallback, useEffect, useRef, useState } from "react"
 import { PositionType } from "@/types/sheet"
-import { useState, useCallback, useRef, useEffect } from "react"
 import { useStore } from "./useStore"
 
 export const useSheetScroll = (config: {

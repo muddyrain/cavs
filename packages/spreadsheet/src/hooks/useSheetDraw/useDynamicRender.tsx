@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
+import { useComputed } from "../useComputed"
 import { useStore } from "../useStore"
 import { useTools } from "./useTools"
-import { useComputed } from "../useComputed"
 
 export const useDynamicRender = () => {
 	const { data, config, containerHeight, containerWidth } = useStore()

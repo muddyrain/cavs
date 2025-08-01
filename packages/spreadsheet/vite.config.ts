@@ -1,7 +1,7 @@
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react-swc"
 import { resolve } from "path"
 import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react-swc"
-import tailwindcss from "@tailwindcss/vite"
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import dts from "vite-plugin-dts"
 

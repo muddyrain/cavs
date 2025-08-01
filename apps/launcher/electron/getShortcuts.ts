@@ -1,6 +1,6 @@
+import { app, shell } from "electron"
 import fs from "fs"
 import path from "path"
-import { app, shell } from "electron"
 
 const startMenuPaths = [
 	"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs",

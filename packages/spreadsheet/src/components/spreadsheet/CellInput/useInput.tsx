@@ -1,10 +1,10 @@
+import _ from "lodash"
+import React, { useCallback, useMemo, useRef, useState } from "react"
 import { useComputed } from "@/hooks/useComputed"
 import { useTools } from "@/hooks/useSheetDraw/useTools"
 import { useStore } from "@/hooks/useStore"
 import { CellData, PositionType } from "@/types/sheet"
-import React, { useCallback, useMemo, useRef, useState } from "react"
 import { CellInputUpdateInputOptions, LineType } from "./CellInput"
-import _ from "lodash"
 
 export const useInput = ({
 	currentFocusCell,

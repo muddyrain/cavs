@@ -1,13 +1,13 @@
 {
-  "extends": "@cavs/ts-config",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "types": ["node", "react", "react-dom"]
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+	"extends": "@cavs/ts-config",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"types": ["node", "react", "react-dom"]
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }

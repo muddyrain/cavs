@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 import { ArrowDirectionType } from "@/types/sheet"
-import { useStore } from "./useStore"
 import { useComputed } from "./useComputed"
+import { useStore } from "./useStore"
 
 export const useDirection = () => {
 	const { selectedCell } = useStore()

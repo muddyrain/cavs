@@ -1,15 +1,14 @@
 @theme {
-  --animate-blink: blink 1s steps(1) infinite;
+	--animate-blink: blink 1s steps(1) infinite;
 
-  @keyframes blink {
+	@keyframes blink {
+		0%,
+		100% {
+			opacity: 1;
+		}
 
-    0%,
-    100% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0;
-    }
-  }
+		50% {
+			opacity: 0;
+		}
+	}
 }

@@ -1,4 +1,3 @@
-import { useStore } from "@/hooks/useStore"
 import {
 	ChevronRightIcon,
 	ClipboardIcon,
@@ -9,9 +8,10 @@ import {
 	ScissorsIcon
 } from "lucide-react"
 import { FC, ReactNode, useMemo, useRef } from "react"
-import { Separator } from "../ui/separator"
 import { useClickOutside } from "@/hooks/useClickOutside"
 import { useFunctions } from "@/hooks/useFunctions"
+import { useStore } from "@/hooks/useStore"
+import { Separator } from "../ui/separator"
 
 interface MenuType {
 	key: string

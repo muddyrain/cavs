@@ -1,8 +1,8 @@
-import { CellData, Sheet, SpreadsheetConfig, SpreadsheetType, TableData } from "@/types/sheet"
 import { produce } from "immer"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { CellData, Sheet, SpreadsheetConfig, SpreadsheetType, TableData } from "@/types/sheet"
 import { generateUUID, limitSheetSize } from "@/utils"
 import { createInitialData } from "@/utils/sheet"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 export const useSpreadsheet = (_config?: SpreadsheetConfig): SpreadsheetType => {
 	const isInitialized = useRef(false)
@@ -27,7 +27,7 @@ export const useSpreadsheet = (_config?: SpreadsheetConfig): SpreadsheetType => 
 			setActiveSheetId(sheet.id)
 			isInitialized.current = true
 		}
-	}, [config, createNewSheet, setActiveSheetId, sheets])
+	}, [createNewSheet, setActiveSheetId, sheets])
 	// 获取当前单元格
 	const getCurrentCell = useCallback(
 		(row: number, col: number) => {

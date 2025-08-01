@@ -1,9 +1,9 @@
 import _ from "lodash"
 import {
-	SelectionSheetType,
-	MergeSpanType,
-	SpreadsheetConfig,
 	CellData,
+	MergeSpanType,
+	SelectionSheetType,
+	SpreadsheetConfig,
 	TableData
 } from "../types/sheet"
 

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { useStore } from "./useStore"
-import { useComputed } from "./useComputed"
-import { PaintCursorURL } from "@/assets"
 import { produce } from "immer"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { PaintCursorURL } from "@/assets"
+import { useComputed } from "./useComputed"
+import { useStore } from "./useStore"
 
 export const useCursor = (options: {
 	currentHoverCell: [number, number] | null
@@ -12,7 +12,6 @@ export const useCursor = (options: {
 	const {
 		data,
 		selectedCell,
-		scrollPosition,
 		headerColsWidth,
 		headerRowsHeight,
 		sideLineMode,
@@ -144,7 +143,6 @@ export const useCursor = (options: {
 		headerRowsHeight,
 		data,
 		zoomSize,
-		scrollPosition,
 		formatBrushStyles,
 		getLeft,
 		getTop,

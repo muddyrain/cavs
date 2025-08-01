@@ -1,3 +1,4 @@
+import React from "react"
 import {
 	CellStyle,
 	DeltaItem,
@@ -6,8 +7,7 @@ import {
 	Sheet,
 	SheetCellSettingsConfig
 } from "@/types/sheet"
-import React from "react"
-import { TableData, SpreadsheetConfig, SelectionSheetType, CellData } from "../../types/sheet"
+import { CellData, SelectionSheetType, SpreadsheetConfig, TableData } from "../../types/sheet"
 import { CellInputActionsType } from "./CellInput"
 
 export type LocalStoreType = {

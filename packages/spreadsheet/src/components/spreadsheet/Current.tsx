@@ -1,5 +1,5 @@
-import { useStore } from "@/hooks/useStore"
 import { FC } from "react"
+import { useStore } from "@/hooks/useStore"
 
 export const Current: FC = () => {
 	const { config, currentCell, data, zoomSize, setData } = useStore()

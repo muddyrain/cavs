@@ -1,6 +1,3 @@
-import { FC } from "react"
-import { Toggle } from "@/components/ui/toggle"
-import { Separator } from "@/components/ui/separator"
 import {
 	Bold,
 	Eraser,
@@ -15,14 +12,17 @@ import {
 	Undo,
 	WrapText
 } from "lucide-react"
+import { FC } from "react"
+import { Separator } from "@/components/ui/separator"
+import { Toggle } from "@/components/ui/toggle"
 import { Tooltip } from "@/components/ui/tooltip"
-import { Settings } from "./Settings"
+import { useStore } from "@/hooks/useStore"
+import { ClickType, useUpdateStyle } from "@/hooks/useUpdateStyle"
 import { ColorPicker } from "./ColorPicker"
 import { Import } from "./import"
+import { Settings } from "./Settings"
 import { TextAlign } from "./TextAlign"
-import { ClickType, useUpdateStyle } from "@/hooks/useUpdateStyle"
 import { VerticalAlign } from "./VerticalAlign"
-import { useStore } from "@/hooks/useStore"
 
 export const Header: FC<{
 	onClick?: (type: ClickType) => void

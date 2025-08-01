@@ -1,15 +1,9 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { SettingsIcon } from "lucide-react"
 import { FC, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel
-} from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
 import {
 	Drawer,
 	DrawerClose,
@@ -20,11 +14,17 @@ import {
 	DrawerTitle,
 	DrawerTrigger
 } from "@/components/ui/drawer"
-import { Tooltip } from "@/components/ui/tooltip"
-import { SettingsIcon } from "lucide-react"
-import { Toggle } from "@/components/ui/toggle"
-import { Button } from "@/components/ui/button"
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel
+} from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
+import { Toggle } from "@/components/ui/toggle"
+import { Tooltip } from "@/components/ui/tooltip"
 import { useStore } from "@/hooks/useStore"
 
 const FormSchema = z.object({
@@ -42,7 +42,7 @@ export const Settings: FC = () => {
 
 	useEffect(() => {
 		for (const key in sheetCellSettingsConfig) {
-			if (Object.prototype.hasOwnProperty.call(sheetCellSettingsConfig, key)) {
+			if (Object.hasOwn(sheetCellSettingsConfig, key)) {
 				const formKey = key as keyof z.infer<typeof FormSchema>
 				form.setValue(formKey, sheetCellSettingsConfig[formKey])
 			}

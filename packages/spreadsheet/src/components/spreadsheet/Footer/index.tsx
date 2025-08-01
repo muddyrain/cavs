@@ -1,8 +1,8 @@
+import { Minus, Plus } from "lucide-react"
 import { FC } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus } from "lucide-react"
-import { useStore } from "@/hooks/useStore"
 import { Tooltip } from "@/components/ui/tooltip"
+import { useStore } from "@/hooks/useStore"
 import { SheetTabs } from "./SheetTabs"
 
 export const Footer: FC = () => {

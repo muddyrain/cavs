@@ -1,8 +1,8 @@
-import { ButtonTrigger } from "@/components/ui/buttonTrigger"
-import { FC, memo, useMemo, useRef, useState } from "react"
-import { DEFAULT_COLOR_CONFIG } from "@/constant/colors/default_colors"
-import { Separator } from "@/components/ui/separator"
 import { CheckIcon, ChevronRightIcon, PaletteIcon } from "lucide-react"
+import { FC, memo, useMemo, useRef, useState } from "react"
+import { ButtonTrigger } from "@/components/ui/buttonTrigger"
+import { Separator } from "@/components/ui/separator"
+import { DEFAULT_COLOR_CONFIG } from "@/constant/colors/default_colors"
 import { useStore } from "@/hooks/useStore"
 import { useUpdateStyle } from "@/hooks/useUpdateStyle"
 

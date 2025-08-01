@@ -1,12 +1,12 @@
 {
-  "extends": "@cavs/ts-config",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "outDir": "dist" 
-  },
-  "include": ["src", "electron/*.ts"],
+	"extends": "@cavs/ts-config",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"outDir": "dist"
+	},
+	"include": ["src", "electron/*.ts"]
 }

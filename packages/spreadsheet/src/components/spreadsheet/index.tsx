@@ -1,20 +1,20 @@
+import _ from "lodash"
+import { InfoIcon } from "lucide-react"
 import React, { useCallback, useMemo, useRef, useState } from "react"
+import { Toaster } from "sonner"
+import { useSetState } from "@/hooks/useSetState"
+import { useSpreadsheet } from "@/hooks/useSpreadsheet"
+import { getSystemInfo } from "@/utils"
 import {
-	TableData,
+	DeltaItem,
+	SheetCellSettingsConfig,
 	SpreadsheetConfig,
 	SpreadsheetType,
-	SheetCellSettingsConfig,
-	DeltaItem
+	TableData
 } from "../../types/sheet"
-import _ from "lodash"
-import { useSpreadsheet } from "@/hooks/useSpreadsheet"
+import { TooltipProvider } from "../ui/tooltip/tooltip"
 import { LocalStoreType, SheetStoreActionType, SheetStoreType, SpreadsheetContext } from "./context"
 import Spreadsheet from "./Spreadsheet"
-import { getSystemInfo } from "@/utils"
-import { Toaster } from "sonner"
-import { InfoIcon } from "lucide-react"
-import { TooltipProvider } from "../ui/tooltip/tooltip"
-import { useSetState } from "@/hooks/useSetState"
 import "@/styles/index.css"
 
 const RootSpreadsheet: React.FC<{
@@ -26,7 +26,7 @@ const RootSpreadsheet: React.FC<{
 	const [deltas, setDeltas] = useState<DeltaItem[]>([])
 	const [deltaIndex, setDeltaIndex] = useState(-1)
 	const isFocused = useRef(false)
-	// eslint-disable-next-line react-hooks/rules-of-hooks
+	// biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
 	const sheet = props.spreadsheet ?? useSpreadsheet(_config)
 	const [sheetCellSettingsConfig, setSheetCellSettingsConfig] = useState<SheetCellSettingsConfig>({
 		isAnchorMergePoint: false

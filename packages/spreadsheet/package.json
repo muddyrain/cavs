@@ -6,16 +6,12 @@
 	"main": "dist/index.cjs.js",
 	"module": "dist/index.es.js",
 	"types": "dist/index.d.ts",
-	"files": [
-		"dist",
-		"README.md"
-	],
+	"files": ["dist", "README.md"],
 	"scripts": {
 		"build": "tsc && vite build --mode production",
 		"build:dev": "vite build --mode development",
 		"dev": "vite build --mode development --watch",
-		"format": "npx prettier --write \"src/**/*.+(cjs|js|ts|jsx|tsx)\" --fix",
-		"lint": "eslint \"src/**/*.+(cjs|js|ts|jsx|tsx)\" --fix",
+		"lint": "biome check --write .",
 		"preview": "vite preview"
 	},
 	"dependencies": {
@@ -38,7 +34,6 @@
 		"vaul": "^1.1.2"
 	},
 	"devDependencies": {
-		"@cavs/eslint-config": "workspace:*",
 		"@cavs/ts-config": "workspace:*",
 		"@eslint/js": "^9.22.0",
 		"@tailwindcss/vite": "^4.1.4",
@@ -50,11 +45,6 @@
 		"@typescript-eslint/eslint-plugin": "^8.31.0",
 		"@vitejs/plugin-react-swc": "^3.8.0",
 		"clsx": "^2.1.1",
-		"eslint": "^9.22.0",
-		"eslint-config-prettier": "^10.1.2",
-		"eslint-plugin-prettier": "^5.2.6",
-		"eslint-plugin-react-hooks": "^5.2.0",
-		"eslint-plugin-react-refresh": "^0.4.19",
 		"exceljs": "^4.4.0",
 		"file-saver": "^2.0.5",
 		"globals": "^16.0.0",
@@ -63,7 +53,6 @@
 		"lodash": "^4.17.21",
 		"lucide-react": "^0.488.0",
 		"motion": "^12.10.4",
-		"prettier": "^3.5.3",
 		"react-dropzone": "^14.3.8",
 		"react-hook-form": "^7.56.1",
 		"sonner": "^2.0.3",

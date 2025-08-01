@@ -1,11 +1,11 @@
+import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, ChevronDownIcon } from "lucide-react"
 import { FC } from "react"
 import {
 	DropdownMenu,
-	DropdownMenuContent,
 	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, ChevronDownIcon } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Tooltip } from "@/components/ui/tooltip"
 import { ClickType } from "@/hooks/useUpdateStyle"

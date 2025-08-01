@@ -1,13 +1,13 @@
-import { useCallback } from "react"
 import ExcelJS from "exceljs"
 import { saveAs } from "file-saver"
-import { useStore } from "./useStore"
+import { useCallback, useMemo } from "react"
 import { Sheet } from "@/types/sheet"
+import { useStore } from "./useStore"
 
 export function useExportExcel() {
 	const { config, sheets } = useStore()
-	const px2width = (px: number) => px / 7
-	const px2pt = (px: number) => px * 0.75
+	const px2width = useMemo(() => (px: number) => px / 7, [])
+	const px2pt = useMemo(() => (px: number) => Math.round(px * 0.75), [])
 	const createSheet = useCallback(
 		(workbook: ExcelJS.Workbook, sheet: Sheet) => {
 			const { data, headerColsWidth, headerRowsHeight } = sheet
@@ -80,7 +80,7 @@ export function useExportExcel() {
 				})
 			})
 		},
-		[config]
+		[config, px2width, px2pt] // 依赖项包括config和sheets，确保在它们变化时重新创建工作表
 	)
 	const exportExcel = useCallback(
 		async (fileName = "表格.xlsx") => {
