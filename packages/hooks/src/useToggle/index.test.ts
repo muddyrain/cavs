@@ -1,15 +1,15 @@
-import { act, renderHook } from "@testing-library/react"
-import { expect, test } from "vitest"
-import { useToggle } from "."
+import { act, renderHook } from "@testing-library/react";
+import { expect, test } from "vitest";
+import { useToggle } from ".";
 
 test("should toggle state", () => {
-	const { result } = renderHook(() => useToggle(false))
+  const { result } = renderHook(() => useToggle(false));
 
-	expect(result.current[0]).toBe(false)
+  expect(result.current[0]).toBe(false);
 
-	act(() => {
-		result.current[1]()
-	})
+  act(() => {
+    result.current[1]();
+  });
 
-	expect(result.current[0]).toBe(true)
-})
+  expect(result.current[0]).toBe(true);
+});

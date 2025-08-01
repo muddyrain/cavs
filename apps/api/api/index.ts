@@ -21,11 +21,9 @@ app.get(
     var salt = new Date().getTime();
     const { q, from = "en", to = "zh" } = req.query;
     if (!q || typeof q !== "string") {
-      return res
-        .status(400)
-        .json({
-          error: 'Invalid query parameter "q". It must be a non-empty string.',
-        });
+      return res.status(400).json({
+        error: 'Invalid query parameter "q". It must be a non-empty string.',
+      });
     }
     const str1 = appid + q + salt + key;
     const sign = md5(str1);

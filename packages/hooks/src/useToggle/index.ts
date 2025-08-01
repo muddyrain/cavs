@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useState } from "react";
 
 /**
  * A custom hook that manages a boolean toggle state.
@@ -6,7 +6,7 @@ import { useCallback, useState } from "react"
  * @returns A tuple containing the current state and a function to toggle the state
  */
 export const useToggle = (initialState = false): [boolean, () => void] => {
-	const [state, setState] = useState(initialState)
-	const toggle = useCallback(() => setState((state) => !state), [])
-	return [state, toggle]
-}
+  const [state, setState] = useState(initialState);
+  const toggle = useCallback(() => setState((state) => !state), []);
+  return [state, toggle];
+};
