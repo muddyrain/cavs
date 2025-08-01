@@ -1,8 +1,7 @@
-/* eslint-disable react-refresh/only-export-components */
-import TIcon from "../assets/icon.png";
 import cssText from "data-text:@/style.css";
 import type { PlasmoCSConfig } from "plasmo";
 import React, { useEffect, useRef, useState } from "react";
+import TIcon from "../assets/icon.png";
 import { Translate } from "./components/translate";
 
 export const config: PlasmoCSConfig = {
