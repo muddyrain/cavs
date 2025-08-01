@@ -8,6 +8,7 @@
 		"changeset": "changeset",
 		"check-types": "turbo run check-types",
 		"dev": "turbo run dev",
+		"format:packages": "npx sort-package-json \"**/package.json\" --ignore \"**/node_modules/**/package.json\"",
 		"lint": "turbo run lint",
 		"publish": "changeset publish",
 		"rm_modules": "bash remove_modules.sh",

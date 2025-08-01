@@ -28,6 +28,8 @@
 		"typescript": "catalog:"
 	},
 	"manifest": {
-		"host_permissions": ["https://*/*"]
+		"host_permissions": [
+			"https://*/*"
+		]
 	}
 }
