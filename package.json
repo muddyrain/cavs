@@ -11,7 +11,7 @@
 		"format:packages": "npx sort-package-json \"**/package.json\" --ignore \"**/node_modules/**/package.json\"",
 		"lint": "turbo run lint",
 		"publish": "changeset publish",
-		"rm_modules": "bash remove_modules.sh",
+		"remove_modules": "bash remove_modules.sh",
 		"test": "turbo run test",
 		"version": "changeset version && turbo run build"
 	},
