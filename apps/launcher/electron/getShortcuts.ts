@@ -3,7 +3,6 @@ import fs from "fs"
 import path from "path"
 
 const startMenuPaths = [
-	"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs",
 	path.join(process.env.APPDATA || "", "Microsoft\\Windows\\Start Menu\\Programs"),
 	path.join(process.env.USERPROFILE || "", "Desktop") // 可选：扫描桌面
 ]
@@ -14,21 +13,36 @@ type Shortcut = {
 	icon: string
 }
 
+const iconCache = new Map<string, string>()
+
 async function getShortcuts(dir: string): Promise<Shortcut[]> {
 	const results: Shortcut[] = []
+	console.log(dir)
 	if (!fs.existsSync(dir)) return results
-	const list = fs.readdirSync(dir)
-
+	const list = fs
+		.readdirSync(dir)
+		.filter(
+			(file) =>
+				file.endsWith(".lnk") ||
+				file.endsWith(".url") ||
+				fs.statSync(path.join(dir, file)).isDirectory()
+		)
+	console.log(list)
 	const promises = list.map(async (file) => {
 		const filePath = path.join(dir, file)
 		const stat = fs.statSync(filePath)
 		if (stat && stat.isDirectory()) {
 			return await getShortcuts(filePath)
-		} else if (file.endsWith(".lnk")) {
+		} else if (file.endsWith(".lnk") || file.endsWith(".url")) {
 			try {
 				const lnk = shell.readShortcutLink(filePath)
-				const _fileIcon = await app.getFileIcon(lnk.target)
-				const icon = _fileIcon.toDataURL() || ""
+				let icon = ""
+				if (iconCache.has(lnk.target)) {
+					icon = iconCache.get(lnk.target) || ""
+				} else {
+					const _fileIcon = await app.getFileIcon(lnk.target)
+					icon = _fileIcon.toDataURL() || ""
+				}
 				return [
 					{
 						name: path.basename(file, ".lnk"),

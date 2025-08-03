@@ -1,0 +1,297 @@
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+		--bg: #212121;
+		--accent-bg: #2b2b2b;
+		--text: #dcdcdc;
+		--text-light: #ababab;
+		--accent: #ffb300;
+		--accent-hover: #ffe099;
+		--accent-text: var(--bg);
+		--code: #f06292;
+		--preformatted: #ccc;
+		--disabled: #111;
+	}
+	/* Add a bit of transparency so light media isn't so glaring in dark mode */
+	img,
+	video {
+		opacity: 0.8;
+	}
+}
+
+/* Reset default appearance */
+textarea,
+select,
+input,
+progress {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+/* Format headers */
+h1 {
+	font-size: 26px;
+	margin-top: 26px;
+	margin-bottom: 10px;
+}
+
+h2 {
+	font-size: 22px;
+	margin-top: 22px;
+	margin-bottom: 8px;
+}
+
+h3 {
+	font-size: 20px;
+	margin-top: 20px;
+	margin-bottom: 8px;
+}
+
+h4 {
+	font-size: 18px;
+	margin-top: 18px;
+	margin-bottom: 8px;
+}
+
+h5 {
+	font-size: 16px;
+	margin-top: 18px;
+	margin-bottom: 8px;
+}
+
+h6 {
+	font-size: 16px;
+	margin-top: 16px;
+	margin-bottom: 8px;
+}
+
+p {
+	margin: 8px 0;
+}
+
+/* Prevent long strings from overflowing container */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+/* Fix line height when title wraps */
+h1,
+h2,
+h3 {
+	line-height: 1.1;
+}
+
+/* Format links & buttons */
+a,
+a:visited {
+	color: var(--accent);
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/* Consolidate box styling */
+aside,
+details,
+pre,
+progress {
+	background-color: var(--accent-bg);
+	border: var(--border-width) solid var(--border);
+	border-radius: var(--standard-border-radius);
+	margin-bottom: 1rem;
+}
+
+/* Format tables */
+table {
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+}
+
+figure > table {
+	width: max-content;
+	margin: 0;
+}
+
+td,
+th {
+	border: var(--border-width) solid var(--border);
+	text-align: start;
+	padding: 0.5rem;
+}
+
+th {
+	background-color: var(--accent-bg);
+	font-weight: bold;
+}
+
+tr:nth-child(even) {
+	/* Set every other cell slightly darker. Improves readability. */
+	background-color: var(--accent-bg);
+}
+
+table caption {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+/* Misc body elements */
+hr {
+	border: none;
+	height: var(--border-width);
+	background: var(--border);
+	margin: 1rem auto;
+}
+
+mark {
+	padding: 2px 5px;
+	border-radius: var(--standard-border-radius);
+	background-color: var(--marked);
+	color: black;
+}
+
+mark a {
+	color: #0d47a1;
+}
+
+img,
+video {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--standard-border-radius);
+}
+
+figure {
+	margin: 0;
+	display: block;
+	overflow-x: auto;
+}
+
+figure > img,
+figure > picture > img {
+	display: block;
+	margin-inline: auto;
+}
+
+figcaption {
+	position: sticky;
+	left: 0;
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--text-light);
+	margin-block: 1rem;
+}
+
+blockquote {
+	border-inline-start: 2px solid var(--quote-bar-bg);
+	color: var(--text-light);
+	padding-left: 12px;
+}
+
+cite {
+	font-size: 0.9rem;
+	color: var(--text-light);
+	font-style: normal;
+}
+
+dt {
+	color: var(--text-light);
+}
+
+/* Use mono font for code elements */
+code,
+pre,
+pre span,
+kbd,
+samp {
+	font-family: var(--mono-font);
+	color: var(--code);
+}
+
+kbd {
+	color: var(--preformatted);
+	border: var(--border-width) solid var(--preformatted);
+	border-bottom: 3px solid var(--preformatted);
+	border-radius: var(--standard-border-radius);
+	padding: 0.1rem 0.4rem;
+}
+
+pre {
+	padding: 1rem 1.4rem;
+	max-width: 100%;
+	overflow: auto;
+	color: var(--preformatted);
+}
+
+/* Fix embedded code within pre */
+pre code {
+	color: var(--preformatted);
+	background: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Progress bars */
+/* Declarations are repeated because you */
+/* cannot combine vendor-specific selectors */
+progress {
+	width: 100%;
+}
+
+progress:indeterminate {
+	background-color: var(--accent-bg);
+}
+
+progress::-webkit-progress-bar {
+	border-radius: var(--standard-border-radius);
+	background-color: var(--accent-bg);
+}
+
+progress::-webkit-progress-value {
+	border-radius: var(--standard-border-radius);
+	background-color: var(--accent);
+}
+
+progress::-moz-progress-bar {
+	border-radius: var(--standard-border-radius);
+	background-color: var(--accent);
+	transition-property: width;
+	transition-duration: 0.3s;
+}
+
+progress:indeterminate::-moz-progress-bar {
+	background-color: var(--accent-bg);
+}
+
+/* Superscript & Subscript */
+/* Prevent scripts from affecting line-height. */
+sup,
+sub {
+	vertical-align: baseline;
+	position: relative;
+}
+
+sup {
+	top: -0.4em;
+}
+
+sub {
+	top: 0.3em;
+}
+
+/* Classes for notices */
+.notice {
+	background: var(--accent-bg);
+	border: var(--border-width) solid var(--border);
+	border-radius: var(--standard-border-radius);
+	padding: 1.5rem;
+	margin: 2rem 0;
+}

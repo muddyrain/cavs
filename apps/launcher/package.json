@@ -23,6 +23,7 @@
 		"electron": "23.3.13",
 		"file-icon": "^5.1.1",
 		"globals": "^16.3.0",
+		"regedit": "^5.1.4",
 		"ts-node": "^10.9.2",
 		"typescript": "~5.8.3",
 		"vite": "^7.0.4",
