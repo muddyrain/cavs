@@ -175,7 +175,6 @@ export const useTab = () => {
 		isFindAlreadySelected,
 		fitCellViewPort
 	])
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		setAlreadySelectedCell(() => [])
 	}, [selection])

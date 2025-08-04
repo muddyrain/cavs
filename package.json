@@ -9,6 +9,7 @@
 		"check-types": "turbo run check-types",
 		"dev": "turbo run dev",
 		"format:packages": "npx sort-package-json \"**/package.json\" --ignore \"**/node_modules/**/package.json\"",
+		"init-repo": "turbo build -F '!./apps/*'  && pnpm install --frozen-lockfile",
 		"lint": "turbo run lint",
 		"publish": "changeset publish",
 		"remove_modules": "bash remove_modules.sh",

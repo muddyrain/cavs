@@ -26,7 +26,6 @@ const RootSpreadsheet: React.FC<{
 	const [deltas, setDeltas] = useState<DeltaItem[]>([])
 	const [deltaIndex, setDeltaIndex] = useState(-1)
 	const isFocused = useRef(false)
-	// biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
 	const sheet = props.spreadsheet ?? useSpreadsheet(_config)
 	const [sheetCellSettingsConfig, setSheetCellSettingsConfig] = useState<SheetCellSettingsConfig>({
 		isAnchorMergePoint: false

@@ -69,8 +69,7 @@ export function pxToPt(px: number | string): number {
 	return pxValue * 0.75
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function measurePerformance<T extends (...args: any[]) => any>(
+export function measurePerformance<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	name: string
 ): (...args: Parameters<T>) => ReturnType<T> {
@@ -81,6 +80,6 @@ export function measurePerformance<T extends (...args: any[]) => any>(
 		if (end - start > 16) {
 			console.warn(`${name} took ${end - start}ms to execute`)
 		}
-		return result
+		return result as ReturnType<T>
 	}
 }
