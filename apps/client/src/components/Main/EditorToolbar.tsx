@@ -112,7 +112,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editorRef.current?.italic()
+							}}
+						>
 							<Italic className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>

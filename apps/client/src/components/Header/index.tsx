@@ -12,6 +12,7 @@ import {
 } from "@cavs/ui"
 import { Save, Settings } from "lucide-react"
 import { FC } from "react"
+import packageJson from "../../../package.json"
 
 export const Header: FC = () => {
 	return (
@@ -19,7 +20,7 @@ export const Header: FC = () => {
 			<div className="flex items-center gap-2">
 				<h1 className="text-lg font-semibold">Markdown Editor</h1>
 				<Badge variant="secondary" className="text-xs">
-					v1.0.0
+					v{packageJson.version}
 				</Badge>
 			</div>
 			<div className="flex items-center gap-2">

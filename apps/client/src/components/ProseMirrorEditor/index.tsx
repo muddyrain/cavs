@@ -1,5 +1,6 @@
 import { toggleMark } from "prosemirror-commands"
 import { exampleSetup } from "prosemirror-example-setup"
+import { keymap } from "prosemirror-keymap"
 import { DOMParser, Schema } from "prosemirror-model"
 import { schema } from "prosemirror-schema-basic"
 import { addListNodes } from "prosemirror-schema-list"
@@ -12,6 +13,7 @@ import "./index.less"
 export interface ProseMirrorEditorRef {
 	focus: () => void
 	bold: () => void
+	italic: () => void
 }
 
 export const ProseMirrorEditor = forwardRef<ProseMirrorEditorRef, {}>((_, ref) => {
@@ -33,6 +35,12 @@ export const ProseMirrorEditor = forwardRef<ProseMirrorEditorRef, {}>((_, ref) =
 				const applyBold = toggleMark(schema.marks.strong)
 				applyBold(editorView.state, editorView.dispatch)
 				editorView.focus()
+			},
+			italic: () => {
+				const editorView = editorViewRef.current!
+				const applyItalic = toggleMark(schema.marks.em)
+				applyItalic(editorView.state, editorView.dispatch)
+				editorView.focus()
 			}
 		}
 		return commands
@@ -45,13 +53,18 @@ export const ProseMirrorEditor = forwardRef<ProseMirrorEditorRef, {}>((_, ref) =
 		}
 		// 创建 ProseMirror 编辑器实例
 		if (containerRef.current) {
+			// 绑定快捷键
+			const keymapPlugins = keymap({
+				"Mod-b": toggleMark(schema.marks.strong), // Ctrl/Cmd + B 加粗
+				"Mod-i": toggleMark(schema.marks.em) // Ctrl/Cmd + I 斜体
+			})
 			const schemaWithLists = new Schema({
 				nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
 				marks: schema.spec.marks
 			})
 			const editorState = EditorState.create({
 				doc: DOMParser.fromSchema(schemaWithLists).parse(containerRef.current),
-				plugins: exampleSetup({ schema: schemaWithLists, menuBar: false })
+				plugins: [...exampleSetup({ schema: schemaWithLists, menuBar: false }), keymapPlugins]
 			})
 			editorViewRef.current = new EditorView(containerRef.current, {
 				state: editorState
