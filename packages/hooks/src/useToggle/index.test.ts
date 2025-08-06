@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
 import { expect, test } from "vitest"
-import { useToggle } from "."
+import { useToggle } from "./index"
 
 test("should toggle state", () => {
 	const { result } = renderHook(() => useToggle(false))
