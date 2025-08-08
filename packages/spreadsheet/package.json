@@ -38,6 +38,7 @@
 	},
 	"devDependencies": {
 		"@cavs/ts-config": "workspace:*",
+		"@cavs/ui": "workspace:*",
 		"@tailwindcss/vite": "^4.1.4",
 		"@types/file-saver": "^2.0.7",
 		"@types/lodash": "^4.17.16",

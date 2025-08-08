@@ -1,9 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { SettingsIcon } from "lucide-react"
-import { FC, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
 import {
 	Drawer,
 	DrawerClose,
@@ -13,7 +7,13 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger
-} from "@/components/ui/drawer"
+} from "@cavs/ui"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { SettingsIcon } from "lucide-react"
+import { FC, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
 import {
 	Form,
 	FormControl,
