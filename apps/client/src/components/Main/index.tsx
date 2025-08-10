@@ -1,3 +1,4 @@
+import { ProseMirrorEditor, ProseMirrorEditorRef } from "@cavs/editor"
 import { Button, Input, ScrollArea } from "@cavs/ui"
 import {
 	ChevronDown,
@@ -10,7 +11,6 @@ import {
 	X
 } from "lucide-react"
 import { FC, useRef, useState } from "react"
-import { ProseMirrorEditor, ProseMirrorEditorRef } from "../ProseMirrorEditor"
 import { EditorToolbar } from "./EditorToolbar"
 
 interface FileNode {
@@ -102,8 +102,8 @@ export const Main: FC = () => {
 	return (
 		<div className="flex flex-1 overflow-hidden">
 			{/* 左侧文件树 */}
-			<div className="min-w-64 border-r bg-card flex flex-col">
-				<div className="p-3 border-b">
+			<div className="min-w-64 border-r border-zinc-300 bg-card flex flex-col">
+				<div className="p-3 border-b border-zinc-300">
 					<div className="flex items-center gap-2 mb-2">
 						<h2 className="font-medium text-sm">文件</h2>
 						<Button variant="ghost" size="sm" className="h-6 w-6 p-0 ml-auto">
@@ -131,8 +131,8 @@ export const Main: FC = () => {
 			{/* 主编辑区域 */}
 			<div className="flex-1 flex flex-col">
 				{/* 文件标签栏 */}
-				<div className="flex items-center px-4 py-1 border-b bg-muted/30">
-					<div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-t-md border border-b-0">
+				<div className="flex items-center px-4 py-1 border-b border-zinc-300 bg-muted/30">
+					<div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-t-md border border-zinc-300 border-b-0">
 						<FileText className="h-3 w-3" />
 						<span className="text-sm">README.md</span>
 						<Button variant="ghost" size="sm" className="h-4 w-4 p-0 ml-2">

@@ -2,7 +2,7 @@ import { FC } from "react"
 
 export const Footer: FC = () => {
 	return (
-		<div className="flex items-center justify-between px-4 py-1 border-t bg-card text-xs text-muted-foreground">
+		<div className="flex items-center justify-between px-4 py-1 border-t border-zinc-300 bg-card text-xs text-muted-foreground">
 			<div className="flex items-center gap-4">
 				<span>行 1, 列 1</span>
 				<span>选中 0 字符</span>

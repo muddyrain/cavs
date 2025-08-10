@@ -16,7 +16,7 @@ import packageJson from "../../../package.json"
 
 export const Header: FC = () => {
 	return (
-		<div className="flex items-center justify-between px-4 py-2 border-b bg-card">
+		<div className="flex items-center justify-between px-4 py-2 border-b border-zinc-300 bg-card">
 			<div className="flex items-center gap-2">
 				<h1 className="text-lg font-semibold">Markdown Editor</h1>
 				<Badge variant="secondary" className="text-xs">
