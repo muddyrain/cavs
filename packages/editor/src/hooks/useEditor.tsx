@@ -1,0 +1,69 @@
+import { setBlockType, toggleMark } from "prosemirror-commands"
+import { EditorView } from "prosemirror-view"
+import { useMemo, useState } from "react"
+import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
+import { schema } from "@/schemas"
+import { AlignType, EditorType, ProseMirrorEditorCommandsType } from "@/types"
+
+export const useEditor = (_editor?: EditorType): EditorType => {
+	if (_editor) {
+		// 如果传入了 editor，则直接返回
+		return _editor
+	}
+	const [editorView, setEditorView] = useState<EditorView | null>(null)
+	const commands: ProseMirrorEditorCommandsType = useMemo(() => {
+		return {
+			editorView,
+			focus: () => {
+				if (editorView?.hasFocus()) {
+					return // 如果已经有焦点，则不需要再次设置焦点
+				}
+				editorView?.focus()
+			},
+			bold: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.strong)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			italic: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.em)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			underline: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.underline)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			strikethrough: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.strikethrough)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			code: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.code)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			textAlign: (align: AlignType) => {
+				if (!editorView) return
+				const { state, dispatch } = editorView
+				const type = state.schema.nodes.paragraph
+				// 设置段落对齐方式
+				if (type) {
+					setBlockType(type, { align })(state, dispatch)
+					editorView.focus()
+				}
+			}
+		}
+	}, [editorView])
+
+	const editorInstance = {
+		commands,
+		editorView,
+		[SYMBOL_SET_EDITOR_VIEW]: setEditorView
+	}
+	return editorInstance as EditorType & {
+		[SYMBOL_SET_EDITOR_VIEW]: (view: EditorView | null) => void
+	}
+}

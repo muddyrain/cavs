@@ -1,4 +1,4 @@
-import { ProseMirrorEditorRef } from "@cavs/editor"
+import { EditorType } from "@cavs/editor"
 import {
 	Button,
 	DropdownMenu,
@@ -38,8 +38,8 @@ import {
 import { FC } from "react"
 
 export const EditorToolbar: FC<{
-	editorRef: React.RefObject<ProseMirrorEditorRef | null>
-}> = ({ editorRef }) => {
+	editor: EditorType
+}> = ({ editor }) => {
 	return (
 		<div className="flex items-center gap-1 px-4 py-2 border-b border-zinc-300 bg-card">
 			{/* 撤销重做 */}
@@ -101,7 +101,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editorRef.current?.bold()
+								editor?.commands.bold()
 							}}
 						>
 							<Bold className="h-4 w-4" />
@@ -116,7 +116,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editorRef.current?.italic()
+								editor?.commands.italic()
 							}}
 						>
 							<Italic className="h-4 w-4" />
@@ -131,7 +131,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editorRef.current?.underline()
+								editor?.commands.underline()
 							}}
 						>
 							<Underline className="h-4 w-4" />
@@ -146,7 +146,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editorRef.current?.strikethrough()
+								editor?.commands.strikethrough()
 							}}
 						>
 							<Strikethrough className="h-4 w-4" />
@@ -161,7 +161,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editorRef.current?.code()
+								editor?.commands.code()
 							}}
 						>
 							<Code className="h-4 w-4" />
@@ -177,7 +177,13 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.textAlign("left")
+							}}
+						>
 							<AlignLeft className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
@@ -186,7 +192,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.textAlign("center")
+							}}
+						>
 							<AlignCenter className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
@@ -195,7 +207,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.textAlign("right")
+							}}
+						>
 							<AlignRight className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>

@@ -1,4 +1,4 @@
-import { ProseMirrorEditor, ProseMirrorEditorRef } from "@cavs/editor"
+import { ProseMirrorEditor, ProseMirrorEditorRef, useEditor } from "@cavs/editor"
 import { Button, Input, ScrollArea } from "@cavs/ui"
 import {
 	ChevronDown,
@@ -57,7 +57,7 @@ const sampleFiles: FileNode[] = [
 export const Main: FC = () => {
 	const [selectedFile, setSelectedFile] = useState("2")
 	const [searchQuery, setSearchQuery] = useState("")
-	const editorRef = useRef<ProseMirrorEditorRef>(null)
+	const editor = useEditor()
 	const FileTreeItem = ({ node, level = 0 }: { node: FileNode; level?: number }) => {
 		const [isOpen, setIsOpen] = useState(node.isOpen || false)
 
@@ -141,12 +141,12 @@ export const Main: FC = () => {
 					</div>
 				</div>
 				{/* 富文本编辑工具栏 */}
-				<EditorToolbar editorRef={editorRef} />
+				<EditorToolbar editor={editor} />
 				{/* ProseMirror 编辑器区域 */}
 				<div className="flex-1 overflow-hidden">
 					<ScrollArea className="h-full">
 						<div className="p-6 max-w-4xl mx-auto">
-							<ProseMirrorEditor ref={editorRef} />
+							<ProseMirrorEditor editor={editor} />
 						</div>
 					</ScrollArea>
 				</div>

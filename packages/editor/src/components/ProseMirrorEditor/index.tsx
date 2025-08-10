@@ -4,71 +4,29 @@ import { keymap } from "prosemirror-keymap"
 import { DOMParser } from "prosemirror-model"
 import { EditorState } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react"
+import { FC, useEffect, useRef } from "react"
 import { schema } from "@/schemas"
 import "./index.less"
+import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
+import { useEditor } from "@/hooks/useEditor"
+import { EditorType, ProseMirrorEditorCommandsType } from "@/types"
 
-export interface ProseMirrorEditorRef {
-	focus: () => void
-	bold: () => void
-	italic: () => void
-	underline: () => void
-	strikethrough: () => void
-	code: () => void
+export type ProseMirrorEditorRef = ProseMirrorEditorCommandsType
+
+type _EditorType = EditorType & {
+	[SYMBOL_SET_EDITOR_VIEW]: (view: EditorView | null) => void
 }
-
-export const ProseMirrorEditor = forwardRef<ProseMirrorEditorRef, {}>((_, ref) => {
+export const ProseMirrorEditor: FC<{
+	editor?: EditorType
+}> = (props) => {
 	const containerRef = useRef<HTMLDivElement>(null)
-	const editorViewRef = useRef<EditorView | null>(null)
-	useImperativeHandle(ref, () => {
-		const commands = {
-			focus: () => {
-				if (editorViewRef.current?.hasFocus()) {
-					return // 如果已经有焦点，则不需要再次设置焦点
-				}
-				editorViewRef.current?.focus()
-			},
-			cancelSelection: () => {
-				console.log("取消选中")
-			},
-			bold: () => {
-				const editorView = editorViewRef.current!
-				const applyBold = toggleMark(schema.marks.strong)
-				applyBold(editorView.state, editorView.dispatch)
-				editorView.focus()
-			},
-			italic: () => {
-				const editorView = editorViewRef.current!
-				const applyItalic = toggleMark(schema.marks.em)
-				applyItalic(editorView.state, editorView.dispatch)
-				editorView.focus()
-			},
-			underline: () => {
-				const editorView = editorViewRef.current!
-				const applyUnderline = toggleMark(schema.marks.underline)
-				applyUnderline(editorView.state, editorView.dispatch)
-				editorView.focus()
-			},
-			strikethrough: () => {
-				const editorView = editorViewRef.current!
-				const applyStrikethrough = toggleMark(schema.marks.strikethrough)
-				applyStrikethrough(editorView.state, editorView.dispatch)
-				editorView.focus()
-			},
-			code: () => {
-				const editorView = editorViewRef.current!
-				const applyCode = toggleMark(schema.marks.code)
-				applyCode(editorView.state, editorView.dispatch)
-				editorView.focus()
-			}
-		}
-		return commands
-	})
-
+	const innerEditorRef = useRef<EditorView | null>(null)
+	const editor = useEditor(props.editor)
 	useEffect(() => {
 		// 确保容器存在
-		if (editorViewRef.current) {
-			editorViewRef.current.destroy()
+		if (innerEditorRef.current) {
+			innerEditorRef.current.destroy()
+			;(editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW](null)
 		}
 		// 创建 ProseMirror 编辑器实例
 		if (containerRef.current) {
@@ -85,11 +43,18 @@ export const ProseMirrorEditor = forwardRef<ProseMirrorEditorRef, {}>((_, ref) =
 				doc: DOMParser.fromSchema(schema).parse(containerRef.current),
 				plugins: [...exampleSetup({ schema, menuBar: false }), keymapPlugins]
 			})
-			editorViewRef.current = new EditorView(containerRef.current, {
+			innerEditorRef.current = new EditorView(containerRef.current, {
 				state: editorState
 			})
+			;(editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW](innerEditorRef.current)
+		}
+		return () => {
+			innerEditorRef.current?.destroy()
+			// 清理
+			if ((editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW])
+				(editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW](null)
 		}
 	}, [])
 
 	return <div className="prosemirror-editor" ref={containerRef}></div>
-})
+}
