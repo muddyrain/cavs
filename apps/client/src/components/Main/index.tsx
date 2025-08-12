@@ -1,4 +1,4 @@
-import { ProseMirrorEditor, ProseMirrorEditorRef, useEditor } from "@cavs/editor"
+import { ProseMirrorEditor, useEditor } from "@cavs/editor"
 import { Button, Input, ScrollArea } from "@cavs/ui"
 import {
 	ChevronDown,
@@ -10,7 +10,7 @@ import {
 	Search,
 	X
 } from "lucide-react"
-import { FC, useRef, useState } from "react"
+import { FC, useState } from "react"
 import { EditorToolbar } from "./EditorToolbar"
 
 interface FileNode {

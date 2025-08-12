@@ -1,6 +1,10 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
-	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
 	"files": {
 		"ignoreUnknown": false
 	},
@@ -19,7 +23,9 @@
 	},
 	"linter": {
 		"enabled": true,
-		"includes": ["!**/dist/**"],
+		"includes": [
+			"!**/dist/**"
+		],
 		"rules": {
 			"recommended": false,
 			"complexity": {
@@ -110,13 +116,24 @@
 		},
 		"globals": []
 	},
-	"html": { "formatter": { "selfCloseVoidElements": "always" } },
+	"html": {
+		"formatter": {
+			"selfCloseVoidElements": "always"
+		}
+	},
 	"overrides": [
 		{
-			"includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+			"includes": [
+				"**/*.ts",
+				"**/*.tsx",
+				"**/*.mts",
+				"**/*.cts"
+			],
 			"linter": {
 				"rules": {
-					"complexity": { "noArguments": "error" },
+					"complexity": {
+						"noArguments": "error"
+					},
 					"correctness": {
 						"noConstAssign": "off",
 						"noGlobalObjectCalls": "off",
@@ -127,7 +144,9 @@
 						"noUnreachable": "off",
 						"noUnreachableSuper": "off"
 					},
-					"style": { "useConst": "error" },
+					"style": {
+						"useConst": "error"
+					},
 					"suspicious": {
 						"noClassAssign": "off",
 						"noDuplicateClassMembers": "off",
@@ -145,136 +164,9 @@
 			}
 		},
 		{
-			"includes": ["**/*.{ts,tsx}"],
-			"javascript": {
-				"globals": [
-					"onanimationend",
-					"ongamepadconnected",
-					"onlostpointercapture",
-					"onanimationiteration",
-					"onkeyup",
-					"onmousedown",
-					"onanimationstart",
-					"onslotchange",
-					"onprogress",
-					"ontransitionstart",
-					"onpause",
-					"onended",
-					"onpointerover",
-					"onscrollend",
-					"onformdata",
-					"ontransitionrun",
-					"onanimationcancel",
-					"ondrag",
-					"onchange",
-					"onbeforeinstallprompt",
-					"onbeforexrselect",
-					"onmessage",
-					"ontransitioncancel",
-					"onpointerdown",
-					"onabort",
-					"onpointerout",
-					"oncuechange",
-					"ongotpointercapture",
-					"onscrollsnapchanging",
-					"onsearch",
-					"onsubmit",
-					"onstalled",
-					"onsuspend",
-					"onreset",
-					"onerror",
-					"onresize",
-					"onmouseenter",
-					"ongamepaddisconnected",
-					"ondragover",
-					"onbeforetoggle",
-					"onmouseover",
-					"onpagehide",
-					"onmousemove",
-					"onratechange",
-					"oncommand",
-					"onmessageerror",
-					"onwheel",
-					"ondevicemotion",
-					"onauxclick",
-					"ontransitionend",
-					"onpaste",
-					"onpageswap",
-					"ononline",
-					"ondeviceorientationabsolute",
-					"onkeydown",
-					"onclose",
-					"onselect",
-					"onpageshow",
-					"onpointercancel",
-					"onbeforematch",
-					"onpointerrawupdate",
-					"ondragleave",
-					"onscrollsnapchange",
-					"onseeked",
-					"onwaiting",
-					"onbeforeunload",
-					"onplaying",
-					"onvolumechange",
-					"ondragend",
-					"onstorage",
-					"onloadeddata",
-					"onfocus",
-					"onoffline",
-					"onplay",
-					"onafterprint",
-					"onclick",
-					"oncut",
-					"onmouseout",
-					"ondblclick",
-					"oncanplay",
-					"onloadstart",
-					"onappinstalled",
-					"onpointermove",
-					"ontoggle",
-					"oncontextmenu",
-					"onblur",
-					"oncancel",
-					"onbeforeprint",
-					"oncontextrestored",
-					"onloadedmetadata",
-					"onpointerup",
-					"onlanguagechange",
-					"oncopy",
-					"onselectstart",
-					"onscroll",
-					"onload",
-					"ondragstart",
-					"onbeforeinput",
-					"oncanplaythrough",
-					"oninput",
-					"oninvalid",
-					"ontimeupdate",
-					"ondurationchange",
-					"onselectionchange",
-					"onmouseup",
-					"location",
-					"onkeypress",
-					"onpointerleave",
-					"oncontextlost",
-					"ondrop",
-					"onsecuritypolicyviolation",
-					"oncontentvisibilityautostatechange",
-					"ondeviceorientation",
-					"onseeking",
-					"onrejectionhandled",
-					"onunload",
-					"onmouseleave",
-					"onhashchange",
-					"onpointerenter",
-					"onmousewheel",
-					"onunhandledrejection",
-					"ondragenter",
-					"onpopstate",
-					"onpagereveal",
-					"onemptied"
-				]
-			},
+			"includes": [
+				"**/*.{ts,tsx}"
+			],
 			"linter": {
 				"rules": {
 					"correctness": {
@@ -286,5 +178,12 @@
 			}
 		}
 	],
-	"assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
 }
