@@ -1,5 +1,5 @@
 {
-	"name": "launcher",
+	"name": "@cavs/launcher",
 	"version": "0.0.0",
 	"private": true,
 	"main": "dist/main.js",
