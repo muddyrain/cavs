@@ -24,7 +24,12 @@
 	"linter": {
 		"enabled": true,
 		"includes": [
-			"!**/dist/**"
+			"apps/**/src/**/*",
+			"packages/**/src/**/*",
+			"packages/*/src/**/*",
+			"apps/*/src/**/*",
+			"!**/dist/**",
+			"!**/node_modules/**"
 		],
 		"rules": {
 			"recommended": false,
@@ -116,68 +121,6 @@
 		},
 		"globals": []
 	},
-	"html": {
-		"formatter": {
-			"selfCloseVoidElements": "always"
-		}
-	},
-	"overrides": [
-		{
-			"includes": [
-				"**/*.ts",
-				"**/*.tsx",
-				"**/*.mts",
-				"**/*.cts"
-			],
-			"linter": {
-				"rules": {
-					"complexity": {
-						"noArguments": "error"
-					},
-					"correctness": {
-						"noConstAssign": "off",
-						"noGlobalObjectCalls": "off",
-						"noInvalidBuiltinInstantiation": "off",
-						"noInvalidConstructorSuper": "off",
-						"noSetterReturn": "off",
-						"noUndeclaredVariables": "off",
-						"noUnreachable": "off",
-						"noUnreachableSuper": "off"
-					},
-					"style": {
-						"useConst": "error"
-					},
-					"suspicious": {
-						"noClassAssign": "off",
-						"noDuplicateClassMembers": "off",
-						"noDuplicateObjectKeys": "off",
-						"noDuplicateParameters": "off",
-						"noFunctionAssign": "off",
-						"noImportAssign": "off",
-						"noRedeclare": "off",
-						"noUnsafeNegation": "off",
-						"noVar": "error",
-						"noWith": "off",
-						"useGetterReturn": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": [
-				"**/*.{ts,tsx}"
-			],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedVariables": "error",
-						"useExhaustiveDependencies": "warn",
-						"useHookAtTopLevel": "error"
-					}
-				}
-			}
-		}
-	],
 	"assist": {
 		"enabled": true,
 		"actions": {
