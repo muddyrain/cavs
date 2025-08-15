@@ -11,16 +11,16 @@
 	"devDependencies": {
 		"@cavs/ts-config": "workspace:*",
 		"@testing-library/react": "^16.0.0",
-		"@types/react": "catalog:",
-		"@types/react-dom": "catalog:",
+		"@types/react": "catalog:react-19",
+		"@types/react-dom": "catalog:react-19",
 		"@vitejs/plugin-react": "^4.7.0",
 		"jsdom": "^24.1.1",
-		"react": "catalog:",
-		"react-dom": "catalog:",
+		"react": "catalog:react-19",
+		"react-dom": "catalog:react-19",
 		"typescript": "catalog:",
 		"vitest": "^2.0.4"
 	},
 	"peerDependencies": {
-		"react": "catalog:"
+		"react": "catalog:react-19"
 	}
 }

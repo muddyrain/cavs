@@ -18,7 +18,7 @@
 	"devDependencies": {
 		"@types/chrome": "0.0.258",
 		"@types/md5": "^2.3.5",
-		"@types/node": "20.11.5",
+		"@types/node": "catalog:",
 		"@types/react": "18.2.0",
 		"@types/react-dom": "18.2.0",
 		"autoprefixer": "catalog:",

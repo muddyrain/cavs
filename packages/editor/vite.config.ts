@@ -1,29 +1,19 @@
-import tailwindcss from "@tailwindcss/vite"
-import react from "@vitejs/plugin-react-swc"
-import { resolve } from "path"
-import { defineConfig } from "vite"
+import { getConfig } from "@cavs/vite-config"
+import { UserConfig } from "vite"
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import dts from "vite-plugin-dts"
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+const config = getConfig(({ mode }) => {
 	const isDev = mode === "development"
 	const isProd = mode === "production"
-
 	return {
 		plugins: [
-			react(),
-			tailwindcss(),
 			cssInjectedByJsPlugin(),
 			dts({
 				tsconfigPath: "./tsconfig.build.json"
 			})
 		],
-		resolve: {
-			alias: {
-				"@": resolve(__dirname, "./src")
-			}
-		},
 		build: {
 			lib: {
 				entry: "./src/index.ts",
@@ -44,5 +34,6 @@ export default defineConfig(({ mode }) => {
 				}
 			}
 		}
-	}
+	} as UserConfig
 })
+export default config
