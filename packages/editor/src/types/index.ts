@@ -10,6 +10,8 @@ export interface ProseMirrorEditorCommandsType {
 	strikethrough: () => void
 	code: () => void
 	textAlign: (align: AlignType) => void
+	builletList: () => void
+	orderedList: () => void
 }
 
 export interface EditorType {

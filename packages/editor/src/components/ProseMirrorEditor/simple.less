@@ -1,0 +1,205 @@
+.ProseMirror {
+  --sans-font: "Segoe UI", Arial, Helvetica, "Helvetica Neue", sans-serif;
+  --mono-font: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  --radius: 5px;
+  --border: 1px solid #e5e7eb;
+  --bg-muted: #f9fafb;
+  --bg-accent: #f3f4f6;
+  --text-muted: #6b7280;
+  --text-accent: #111827;
+  --font-sans: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'Fira Mono', 'Menlo', 'Monaco', monospace;
+
+  /* 基础重置与变 */
+  textarea,
+  select,
+  input,
+  progress {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  /* 标题与文本*/
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    color: var(--text-accent);
+    margin-bottom: 0.5em;
+    margin-top: 1.5em;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  h5,
+  h6 {
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.75em 0;
+  }
+
+  b,
+  strong {
+    font-weight: 700;
+    color: var(--text-accent);
+  }
+
+  i,
+  em {
+    font-style: italic;
+  }
+
+  mark {
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: var(--radius);
+    padding: 2px 6px;
+  }
+
+  /* 列表样式 */
+  ul,
+  ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin-bottom: 0.3em;
+  }
+
+  /* 引用块 */
+  blockquote {
+    border-left: 3px solid #e5e7eb;
+    background: var(--bg-accent);
+    color: var(--text-muted);
+    padding: 0.75em 1em;
+    margin: 1em 0;
+    border-radius: var(--radius);
+    font-style: italic;
+  }
+
+  /* 代码相关 */
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    background: #f3f4f6;
+    color: #374151;
+    border-radius: var(--radius);
+    padding: 2px 6px;
+    font-size: 0.95em;
+    border: 1px solid #d1d5db;
+    margin: 0 2px;
+  }
+
+  pre {
+    padding: 1em;
+    overflow-x: auto;
+    background: #f3f4f6;
+    border-radius: var(--radius);
+    margin: 1em 0;
+  }
+
+  /* 表格样式 */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    background: var(--bg-muted);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  th,
+  td {
+    border: var(--border);
+    padding: 0.75em;
+    text-align: left;
+  }
+
+  th {
+    background: var(--bg-accent);
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) {
+    background: #f9fafb;
+  }
+
+  caption {
+    font-size: 1em;
+    color: var(--text-muted);
+    margin-bottom: 0.5em;
+  }
+
+  /* 媒体样式 */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    margin: 0.5em 0;
+  }
+
+  figure {
+    margin: 0;
+    display: block;
+  }
+
+  figcaption {
+    text-align: center;
+    font-size: 0.95em;
+    color: var(--text-muted);
+    margin: 0.5em 0;
+  }
+
+  /* 其它结构 */
+  hr {
+    border: none;
+    height: 1px;
+    background: #e5e7eb;
+    margin: 2em 0;
+    border-radius: var(--radius);
+  }
+
+  sup {
+    font-size: 0.8em;
+    vertical-align: super;
+  }
+
+  sub {
+    font-size: 0.8em;
+    vertical-align: sub;
+  }
+}

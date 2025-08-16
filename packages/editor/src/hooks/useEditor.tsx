@@ -1,4 +1,5 @@
 import { setBlockType, toggleMark } from "prosemirror-commands"
+import { wrapInList } from "prosemirror-schema-list"
 import { EditorView } from "prosemirror-view"
 import { useMemo, useState } from "react"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
@@ -54,6 +55,16 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 					setBlockType(type, { align })(state, dispatch)
 					editorView.focus()
 				}
+			},
+			builletList: () => {
+				if (!editorView) return
+				wrapInList(schema.nodes.bullet_list)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			orderedList: () => {
+				if (!editorView) return
+				wrapInList(schema.nodes.ordered_list)(editorView.state, editorView.dispatch)
+				editorView.focus()
 			}
 		}
 	}, [editorView])

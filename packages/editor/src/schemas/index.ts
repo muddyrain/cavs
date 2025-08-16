@@ -2,6 +2,7 @@ import { NodeSpec, Schema } from "prosemirror-model"
 import { schema as schemaBasic } from "prosemirror-schema-basic"
 import { blockquote } from "./blockquote"
 import { heading } from "./heading"
+import { bullet_list, list_item, ordered_list } from "./list"
 import { strikethrough, underline } from "./marks"
 
 export const paragraph: NodeSpec = {
@@ -30,7 +31,10 @@ export const schema: Schema = new Schema({
 		},
 		paragraph,
 		heading,
-		blockquote
+		blockquote,
+		bullet_list,
+		ordered_list,
+		list_item
 	},
 	marks: schemaBasic.spec.marks.append({ underline, strikethrough })
 })

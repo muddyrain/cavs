@@ -242,7 +242,13 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.builletList()
+							}}
+						>
 							<List className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
@@ -251,7 +257,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.orderedList()
+							}}
+						>
 							<ListOrdered className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
