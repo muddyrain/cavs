@@ -1,4 +1,3 @@
-import { exampleSetup } from "prosemirror-example-setup"
 import { DOMParser } from "prosemirror-model"
 import { EditorState } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
@@ -7,8 +6,7 @@ import { schema } from "@/schemas"
 import "./index.less"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { useEditor } from "@/hooks/useEditor"
-import { inputPlugins } from "@/plugins/inputRules"
-import { keymapPlugins } from "@/plugins/keymap"
+import { plugins } from "@/plugins"
 import { EditorType, ProseMirrorEditorCommandsType } from "@/types"
 
 export type ProseMirrorEditorRef = ProseMirrorEditorCommandsType
@@ -32,7 +30,7 @@ export const ProseMirrorEditor: FC<{
 		if (containerRef.current) {
 			const editorState = EditorState.create({
 				doc: DOMParser.fromSchema(schema).parse(containerRef.current),
-				plugins: [...exampleSetup({ schema, menuBar: false }), keymapPlugins, inputPlugins]
+				plugins
 			})
 			innerEditorRef.current = new EditorView(containerRef.current, {
 				state: editorState
