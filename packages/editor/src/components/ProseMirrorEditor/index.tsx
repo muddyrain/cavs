@@ -1,6 +1,4 @@
-import { toggleMark } from "prosemirror-commands"
 import { exampleSetup } from "prosemirror-example-setup"
-import { keymap } from "prosemirror-keymap"
 import { DOMParser } from "prosemirror-model"
 import { EditorState } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
@@ -9,6 +7,8 @@ import { schema } from "@/schemas"
 import "./index.less"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { useEditor } from "@/hooks/useEditor"
+import { inputPlugins } from "@/plugins/inputRules"
+import { keymapPlugins } from "@/plugins/keymap"
 import { EditorType, ProseMirrorEditorCommandsType } from "@/types"
 
 export type ProseMirrorEditorRef = ProseMirrorEditorCommandsType
@@ -30,18 +30,9 @@ export const ProseMirrorEditor: FC<{
 		}
 		// 创建 ProseMirror 编辑器实例
 		if (containerRef.current) {
-			// 绑定快捷键
-			const keymapPlugins = keymap({
-				"Mod-b": toggleMark(schema.marks.strong), // Ctrl/Cmd + B 加粗
-				"Mod-i": toggleMark(schema.marks.em), // Ctrl/Cmd + I 斜体
-				"Mod-u": toggleMark(schema.marks.underline), // Ctrl/Cmd + U 下划线
-				"Mod-Shift-x": toggleMark(schema.marks.strikethrough), // Ctrl/Cmd + Shift + X 删除线
-				"Mod-Shift-c": toggleMark(schema.marks.code) // Ctrl/Cmd + Shift + C 代码
-			})
-
 			const editorState = EditorState.create({
 				doc: DOMParser.fromSchema(schema).parse(containerRef.current),
-				plugins: [...exampleSetup({ schema, menuBar: false }), keymapPlugins]
+				plugins: [...exampleSetup({ schema, menuBar: false }), keymapPlugins, inputPlugins]
 			})
 			innerEditorRef.current = new EditorView(containerRef.current, {
 				state: editorState
@@ -50,7 +41,6 @@ export const ProseMirrorEditor: FC<{
 		}
 		return () => {
 			innerEditorRef.current?.destroy()
-			// 清理
 			if ((editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW])
 				(editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW](null)
 		}

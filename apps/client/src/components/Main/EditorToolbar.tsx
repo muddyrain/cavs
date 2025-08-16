@@ -107,7 +107,10 @@ export const EditorToolbar: FC<{
 							<Bold className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>粗体 (Ctrl+B)</TooltipContent>
+					<TooltipContent className="flex flex-col">
+						<span>加粗 (Ctrl+B)</span>
+						<span>MD: **加粗**</span>
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -122,7 +125,10 @@ export const EditorToolbar: FC<{
 							<Italic className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>斜体 (Ctrl+I)</TooltipContent>
+					<TooltipContent className="flex flex-col">
+						<span>斜体 (Ctrl+I)</span>
+						<span>MD: *斜体*</span>
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -137,7 +143,10 @@ export const EditorToolbar: FC<{
 							<Underline className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>下划线 (Ctrl+U)</TooltipContent>
+					<TooltipContent className="flex flex-col">
+						<span>下划线 (Ctrl+U)</span>
+						<span>MD: ~下划线~</span>
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -152,7 +161,10 @@ export const EditorToolbar: FC<{
 							<Strikethrough className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>删除线</TooltipContent>
+					<TooltipContent className="flex flex-col">
+						<span>删除线(Ctrl+Shift+X)</span>
+						<span>MD: ~~删除线~~</span>
+					</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
@@ -167,7 +179,10 @@ export const EditorToolbar: FC<{
 							<Code className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>行内代码</TooltipContent>
+					<TooltipContent className="flex flex-col">
+						<span>代码 (Ctrl+Shift+C) </span>
+						<span>MD: `代码`</span>
+					</TooltipContent>
 				</Tooltip>
 			</div>
 
