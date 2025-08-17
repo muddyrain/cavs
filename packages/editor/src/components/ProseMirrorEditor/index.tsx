@@ -8,6 +8,7 @@ import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { useEditor } from "@/hooks/useEditor"
 import { plugins } from "@/plugins"
 import { EditorType, ProseMirrorEditorCommandsType } from "@/types"
+import { createEditorView } from "./editorView"
 
 export type ProseMirrorEditorRef = ProseMirrorEditorCommandsType
 
@@ -32,9 +33,7 @@ export const ProseMirrorEditor: FC<{
 				doc: DOMParser.fromSchema(schema).parse(containerRef.current),
 				plugins
 			})
-			innerEditorRef.current = new EditorView(containerRef.current, {
-				state: editorState
-			})
+			innerEditorRef.current = createEditorView(containerRef.current, editorState)
 			;(editor as _EditorType)[SYMBOL_SET_EDITOR_VIEW](innerEditorRef.current)
 		}
 		return () => {

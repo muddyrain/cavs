@@ -12,7 +12,7 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 		return _editor
 	}
 	const [editorView, setEditorView] = useState<EditorView | null>(null)
-	const commands: ProseMirrorEditorCommandsType = useMemo(() => {
+	const commands = useMemo(() => {
 		return {
 			editorView,
 			focus: () => {
@@ -56,7 +56,7 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 					editorView.focus()
 				}
 			},
-			builletList: () => {
+			bulletList: () => {
 				if (!editorView) return
 				wrapInList(schema.nodes.bullet_list)(editorView.state, editorView.dispatch)
 				editorView.focus()
@@ -65,8 +65,24 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 				if (!editorView) return
 				wrapInList(schema.nodes.ordered_list)(editorView.state, editorView.dispatch)
 				editorView.focus()
+			},
+			blockquote: () => {
+				if (!editorView) return
+				wrapInList(schema.nodes.blockquote)(editorView.state, editorView.dispatch)
+				editorView.focus()
+			},
+			image: () => {
+				if (!editorView) return
+				const node = editorView.state.schema.nodes.image.create({
+					src: "https://picsum.photos/200",
+					alt: "",
+					title: ""
+				})
+				const tr = editorView.state.tr.replaceSelectionWith(node, false)
+				editorView.dispatch(tr)
+				editorView.focus()
 			}
-		}
+		} as ProseMirrorEditorCommandsType
 	}, [editorView])
 
 	const editorInstance = {

@@ -19,7 +19,6 @@ export function useEditorStatus(editorView: EditorView | null): EditorStatus {
 
 	useEffect(() => {
 		if (!editorView) return
-		console.log("EditorView initialized:", editorView)
 		function markActive(state: EditorState, type: Mark | MarkType) {
 			const { from, $from, to, empty } = state.selection
 			if (empty) return !!type.isInSet(state.storedMarks || $from.marks())
@@ -28,7 +27,6 @@ export function useEditorStatus(editorView: EditorView | null): EditorStatus {
 
 		const update = () => {
 			const state = editorView.state
-			console.log("Bold active:", markActive(state, state.schema.marks.strong))
 			setStatus({
 				isBold: markActive(state, state.schema.marks.strong),
 				isItalic: markActive(state, state.schema.marks.em),
@@ -39,7 +37,6 @@ export function useEditorStatus(editorView: EditorView | null): EditorStatus {
 		// 监听 selection/content 变化
 		const oldDispatch = editorView.dispatch
 		editorView.dispatch = (tr) => {
-			console.log(1)
 			oldDispatch.call(editorView, tr)
 			update()
 		}

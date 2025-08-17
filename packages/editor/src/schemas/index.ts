@@ -1,27 +1,11 @@
-import { NodeSpec, Schema } from "prosemirror-model"
+import { Schema } from "prosemirror-model"
 import { schema as schemaBasic } from "prosemirror-schema-basic"
 import { blockquote } from "./blockquote"
 import { heading } from "./heading"
+import { image } from "./image"
 import { bullet_list, list_item, ordered_list } from "./list"
 import { strikethrough, underline } from "./marks"
-
-export const paragraph: NodeSpec = {
-	content: "inline*",
-	group: "block",
-	attrs: { align: { default: "left" } },
-	parseDOM: [
-		{
-			tag: "p",
-			getAttrs(dom) {
-				return { align: dom.style.textAlign || "left" }
-			}
-		}
-	],
-	toDOM(node) {
-		const { align } = node.attrs
-		return ["p", { style: `text-align: ${align}` }, 0]
-	}
-}
+import { paragraph } from "./paragraph"
 
 export const schema: Schema = new Schema({
 	nodes: {
@@ -34,7 +18,8 @@ export const schema: Schema = new Schema({
 		blockquote,
 		bullet_list,
 		ordered_list,
-		list_item
+		list_item,
+		image
 	},
 	marks: schemaBasic.spec.marks.append({ underline, strikethrough })
 })

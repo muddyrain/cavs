@@ -246,7 +246,7 @@ export const EditorToolbar: FC<{
 							variant="ghost"
 							size="sm"
 							onClick={() => {
-								editor?.commands.builletList()
+								editor?.commands.bulletList()
 							}}
 						>
 							<List className="h-4 w-4" />
@@ -272,7 +272,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.blockquote()
+							}}
+						>
 							<Quote className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
@@ -295,7 +301,13 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => {
+								editor?.commands.image()
+							}}
+						>
 							<ImageIcon className="h-4 w-4" />
 						</Button>
 					</TooltipTrigger>
