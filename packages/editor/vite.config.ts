@@ -6,7 +6,6 @@ import dts from "vite-plugin-dts"
 // https://vite.dev/config/
 const config = getConfig(({ mode }) => {
 	const isDev = mode === "development"
-	const isProd = mode === "production"
 	return {
 		plugins: [
 			cssInjectedByJsPlugin(),
@@ -18,11 +17,11 @@ const config = getConfig(({ mode }) => {
 			lib: {
 				entry: "./src/index.ts",
 				name: "index",
-				formats: isDev ? ["es"] : ["es", "umd", "cjs"],
+				formats: ["es", "umd", "cjs"],
 				fileName: (format) => `index.${format}.js`
 			},
 			cssCodeSplit: false,
-			minify: isProd,
+			minify: true,
 			sourcemap: isDev,
 			rollupOptions: {
 				external: ["react", "react-dom"],

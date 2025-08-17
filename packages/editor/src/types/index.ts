@@ -20,3 +20,10 @@ export interface EditorType {
 	commands: ProseMirrorEditorCommandsType
 	editorView: EditorView | null | undefined
 }
+
+export interface CoordsType {
+	left: number
+	right: number
+	top: number
+	bottom: number
+}

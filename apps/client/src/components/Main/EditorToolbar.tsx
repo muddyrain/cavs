@@ -41,7 +41,7 @@ export const EditorToolbar: FC<{
 	editor: EditorType
 }> = ({ editor }) => {
 	return (
-		<div className="flex items-center gap-1 px-4 py-2 border-b border-zinc-300 bg-card">
+		<div className="flex items-center gap-1 px-4 py-2 border-b border-zinc-200 bg-card">
 			{/* 撤销重做 */}
 			<div className="flex items-center gap-1">
 				<Tooltip>

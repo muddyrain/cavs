@@ -1,4 +1,4 @@
-import "./index.less"
+import "./index.css"
 
 export * from "@/components/ProseMirrorEditor"
 export { useEditor } from "@/hooks/useEditor"
