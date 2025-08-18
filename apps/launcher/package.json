@@ -2,7 +2,7 @@
 	"name": "@cavs/launcher",
 	"version": "0.0.0",
 	"private": true,
-	"main": "dist/main.js",
+	"main": "./src/index.ts",
 	"scripts": {
 		"build": "tsc --noEmit && vite build",
 		"dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && tsc -p ./electron/tsconfig.json && electron .\"",

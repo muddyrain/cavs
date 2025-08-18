@@ -302,6 +302,9 @@ importers:
       '@cavs/ts-config':
         specifier: workspace:*
         version: link:../ts-config
+      '@rollup/plugin-alias':
+        specifier: ^5.1.1
+        version: 5.1.1(rollup@4.45.1)
       '@tailwindcss/vite':
         specifier: ^4.1.4
         version: 4.1.11(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
@@ -2931,6 +2934,15 @@ packages:
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
+
+  '@rollup/plugin-alias@5.1.1':
+    resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
 
   '@rollup/pluginutils@5.2.0':
     resolution: {integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==}
@@ -10204,6 +10216,10 @@ snapshots:
   '@radix-ui/rect@1.1.1': {}
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
+
+  '@rollup/plugin-alias@5.1.1(rollup@4.45.1)':
+    optionalDependencies:
+      rollup: 4.45.1
 
   '@rollup/pluginutils@5.2.0(rollup@4.45.1)':
     dependencies:

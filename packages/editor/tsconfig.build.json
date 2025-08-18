@@ -3,7 +3,7 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"declaration": true,
-		"emitDeclarationOnly": true,
+		// "emitDeclarationOnly": true,
 		"jsx": "react-jsx",
 		"outDir": "./dist/",
 		"noEmit": false,

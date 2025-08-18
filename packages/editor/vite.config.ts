@@ -4,12 +4,17 @@ import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import dts from "vite-plugin-dts"
 
 // https://vite.dev/config/
-const config = getConfig(({ mode }) => {
-	const isDev = mode === "development"
+const config = getConfig(() => {
 	return {
 		plugins: [
 			cssInjectedByJsPlugin(),
 			dts({
+				include: ["src/**/*.ts", "src/**/*.tsx"],
+				exclude: ["src/**/*.test.tsx", "src/**/*.stories.tsx"],
+				rollupTypes: false,
+				copyDtsFiles: true,
+				insertTypesEntry: true,
+				entryRoot: "./src",
 				tsconfigPath: "./tsconfig.build.json"
 			})
 		],
@@ -22,7 +27,7 @@ const config = getConfig(({ mode }) => {
 			},
 			cssCodeSplit: false,
 			minify: true,
-			sourcemap: isDev,
+			sourcemap: true,
 			rollupOptions: {
 				external: ["react", "react-dom"],
 				output: {

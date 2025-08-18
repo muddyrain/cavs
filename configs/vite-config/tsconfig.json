@@ -8,7 +8,7 @@
 		"paths": {
 			"@/*": ["src/*"]
 		},
-		"outDir": "./dist",
+		"outDir": "${configDir}/dist",
 		"declaration": true
 	},
 	"include": ["src/**/*"],
