@@ -1,7 +1,8 @@
+import { toast } from "@cavs/ui"
 import { setBlockType, toggleMark } from "prosemirror-commands"
 import { wrapInList } from "prosemirror-schema-list"
 import { EditorView } from "prosemirror-view"
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { schema } from "@/schemas"
 import { AlignType, EditorType, ProseMirrorEditorCommandsType } from "@/types"
@@ -12,6 +13,7 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 		return _editor
 	}
 	const [editorView, setEditorView] = useState<EditorView | null>(null)
+	const inputFileRef = useRef<HTMLInputElement>(null)
 	const commands = useMemo(() => {
 		return {
 			editorView,
@@ -73,14 +75,30 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 			},
 			image: () => {
 				if (!editorView) return
-				const node = editorView.state.schema.nodes.image.create({
-					src: "https://picsum.photos/200",
-					alt: "",
-					title: ""
-				})
-				const tr = editorView.state.tr.replaceSelectionWith(node, false)
-				editorView.dispatch(tr)
-				editorView.focus()
+				if (!inputFileRef.current) return
+				inputFileRef.current.click()
+				inputFileRef.current.onchange = () => {
+					for (const file of inputFileRef.current?.files || []) {
+						// 校验文件类型
+						if (!/image\/(png|jpg|jpeg|gif)/.test(file.type)) {
+							toast.info("只支持上传图片文件")
+							return
+						}
+						const reader = new FileReader()
+						reader.readAsDataURL(file)
+						reader.onload = () => {
+							const src = reader.result as string
+							const node = editorView.state.schema.nodes.image.create({
+								src,
+								alt: file.name,
+								title: file.name
+							})
+							const tr = editorView.state.tr.replaceSelectionWith(node, false)
+							editorView.dispatch(tr)
+							editorView.focus()
+						}
+					}
+				}
 			}
 		} as ProseMirrorEditorCommandsType
 	}, [editorView])
@@ -88,6 +106,7 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 	const editorInstance = {
 		commands,
 		editorView,
+		inputFileRef,
 		[SYMBOL_SET_EDITOR_VIEW]: setEditorView
 	}
 	return editorInstance as EditorType & {

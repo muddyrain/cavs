@@ -4,6 +4,7 @@ import { EditorView } from "prosemirror-view"
 import { FC, useEffect, useRef, useState } from "react"
 import { schema } from "@/schemas"
 import "./index.less"
+import { Toaster } from "@cavs/ui"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { useEditor } from "@/hooks/useEditor"
 import { plugins } from "@/plugins"
@@ -77,6 +78,15 @@ export const ProseMirrorEditor: FC<{
 					}}
 				/>
 			)}
+			<input
+				className="hidden"
+				type="file"
+				name="file"
+				accept=".png,.jpg,.jpeg,.gif"
+				id="prosemirror-editor-input-file"
+				ref={editor.inputFileRef}
+			/>
+			<Toaster position="top-center" />
 		</div>
 	)
 }

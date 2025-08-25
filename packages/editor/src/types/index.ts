@@ -19,6 +19,7 @@ export interface ProseMirrorEditorCommandsType {
 export interface EditorType {
 	commands: ProseMirrorEditorCommandsType
 	editorView: EditorView | null | undefined
+	inputFileRef: React.RefObject<HTMLInputElement>
 }
 
 export interface CoordsType {
