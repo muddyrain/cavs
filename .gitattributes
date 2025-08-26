@@ -1,4 +1,1 @@
-# 将所有文本文件的行尾标准化。
-# 在提交时，Git 会将行尾转换为 LF。
-# 在签出时，Git 会根据你的操作系统转换为合适的行尾（Windows 上是 CRLF，Mac/Linux 上是 LF）。
-* text=auto
+pnpm-lock.yaml merge=theirs text

@@ -1,7 +1,5 @@
 pnpm lint
 
-pnpm build
-
 pnpm format:packages
 
 git add .
