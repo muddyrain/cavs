@@ -19,7 +19,7 @@
 	"scripts": {
 		"build": "tsc && vite build --mode production",
 		"build:dev": "vite build --mode development",
-		"dev": "vite build --mode production --watch",
+		"dev": "vite build --mode development --watch",
 		"lint": "biome check --write .",
 		"preview": "vite preview"
 	},

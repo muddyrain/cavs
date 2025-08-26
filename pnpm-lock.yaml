@@ -624,7 +624,7 @@ importers:
         version: 1.2.7(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@tailwindcss/vite':
         specifier: ^4.1.11
-        version: 4.1.11(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
+        version: 4.1.11(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -659,6 +659,9 @@ importers:
       '@cavs/ts-config':
         specifier: workspace:*
         version: link:../../configs/ts-config
+      '@cavs/vite-config':
+        specifier: workspace:*
+        version: link:../../configs/vite-config
       '@types/node':
         specifier: 'catalog:'
         version: 24.1.0
@@ -670,7 +673,7 @@ importers:
         version: 19.0.0
       '@vitejs/plugin-react-swc':
         specifier: ^3.10.2
-        version: 3.11.0(@swc/helpers@0.5.17)(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
+        version: 3.11.0(@swc/helpers@0.5.17)(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
       concurrently:
         specifier: ^9.2.0
         version: 9.2.0
@@ -687,14 +690,14 @@ importers:
         specifier: ~5.8.3
         version: 5.8.3
       vite:
-        specifier: ^7.0.4
-        version: 7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
+        specifier: catalog:vite-6
+        version: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
-        version: 3.5.2(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
+        version: 3.5.2(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.1.0)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
+        version: 4.5.4(@types/node@24.1.0)(rollup@4.45.1)(typescript@5.8.3)(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0))
 
 packages:
 
@@ -14997,10 +15000,6 @@ snapshots:
     dependencies:
       vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
 
-  vite-plugin-css-injected-by-js@3.5.2(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)):
-    dependencies:
-      vite: 7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
-
   vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.45.1)(typescript@5.7.3)(vite@6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)):
     dependencies:
       '@microsoft/api-extractor': 7.52.8(@types/node@24.1.0)
@@ -15034,25 +15033,6 @@ snapshots:
       typescript: 5.8.3
     optionalDependencies:
       vite: 6.3.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-
-  vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)):
-    dependencies:
-      '@microsoft/api-extractor': 7.52.8(@types/node@24.1.0)
-      '@rollup/pluginutils': 5.2.0(rollup@4.45.1)
-      '@volar/typescript': 2.4.20
-      '@vue/language-core': 2.2.0(typescript@5.8.3)
-      compare-versions: 6.1.1
-      debug: 4.4.1
-      kolorist: 1.8.0
-      local-pkg: 1.1.1
-      magic-string: 0.30.17
-      typescript: 5.8.3
-    optionalDependencies:
-      vite: 7.0.5(@types/node@24.1.0)(jiti@2.4.2)(less@4.4.0)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.8.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
