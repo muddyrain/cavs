@@ -46,6 +46,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.1.3
         version: 2.1.3
+      '@cavs/ts-config':
+        specifier: workspace:*
+        version: link:configs/ts-config
       '@changesets/cli':
         specifier: ^2.29.5
         version: 2.29.5
