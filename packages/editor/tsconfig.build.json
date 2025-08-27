@@ -2,15 +2,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"jsx": "react-jsx",
-		"outDir": "./dist/",
-		"noEmit": false,
-		"useDefineForClassFields": true,
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"isolatedModules": true,
-		"moduleDetection": "force"
+		"outDir": "./dist/"
 	},
 	"include": ["src"]
 }

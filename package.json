@@ -3,6 +3,11 @@
 	"private": true,
 	"description": "Monorepo for CAVS projects",
 	"type": "module",
+	"workspaces": [
+		"packages/*",
+		"apps/*",
+		"configs/*"
+	],
 	"scripts": {
 		"build": "turbo run build",
 		"changeset": "changeset",

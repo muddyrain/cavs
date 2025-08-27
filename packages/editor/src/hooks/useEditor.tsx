@@ -77,7 +77,8 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 				if (!editorView) return
 				if (!inputFileRef.current) return
 				inputFileRef.current.click()
-				inputFileRef.current.onchange = () => {
+				inputFileRef.current.onchange = (e) => {
+					const target = e.target as HTMLInputElement
 					for (const file of inputFileRef.current?.files || []) {
 						// 校验文件类型
 						if (!/image\/(png|jpg|jpeg|gif)/.test(file.type)) {
@@ -97,6 +98,11 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 							editorView.dispatch(tr)
 							editorView.focus()
 						}
+					}
+					// 上传后清空文件列表，避免无法上传同一张图片
+					if (inputFileRef.current) {
+						inputFileRef.current.files = null
+						target.value = ""
 					}
 				}
 			}

@@ -92,13 +92,6 @@ importers:
 
   apps/client:
     dependencies:
-      react:
-        specifier: catalog:react-19
-        version: 19.0.0
-      react-dom:
-        specifier: catalog:react-19
-        version: 19.0.0(react@19.0.0)
-    devDependencies:
       '@cavs/editor':
         specifier: workspace:^
         version: link:../../packages/editor
@@ -108,6 +101,13 @@ importers:
       '@cavs/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      react:
+        specifier: catalog:react-19
+        version: 19.0.0
+      react-dom:
+        specifier: catalog:react-19
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
       '@eslint/js':
         specifier: ^9.30.1
         version: 9.32.0

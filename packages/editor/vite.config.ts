@@ -1,5 +1,4 @@
 import { buildConfig, getConfig } from "@cavs/vite-config"
-import { UserConfig } from "vite"
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import dts from "vite-plugin-dts"
 
@@ -15,6 +14,7 @@ const config = getConfig(({ mode }) => {
 			})
 		],
 		build: buildConfig(mode)
-	} as UserConfig
+	}
 })
+
 export default config

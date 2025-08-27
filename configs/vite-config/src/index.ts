@@ -16,7 +16,6 @@ export const getConfig = (userConfig: UserConfig | UserConfigFnObject = {}) => {
 		},
 		build: {
 			emptyOutDir: false,
-			sourcemap: true,
 			rollupOptions: {
 				plugins: [
 					alias({
