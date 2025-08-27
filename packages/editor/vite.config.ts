@@ -10,8 +10,8 @@ const config = getConfig(({ mode }) => {
 			cssInjectedByJsPlugin(),
 			dts({
 				tsconfigPath: "./tsconfig.build.json",
-				// 确保类型声明正确生成
-				insertTypesEntry: true
+				insertTypesEntry: true,
+				outDir: ["dist/types"]
 			})
 		],
 		build: buildConfig(mode)

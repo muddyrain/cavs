@@ -1,9 +1,20 @@
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vitest/config"
+import { buildConfig, getConfig } from "@cavs/vite-config"
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
+import dts from "vite-plugin-dts"
 
-export default defineConfig({
-	plugins: [react()],
-	test: {
-		environment: "jsdom"
+// https://vite.dev/config/
+const config = getConfig(({ mode }) => {
+	return {
+		plugins: [
+			cssInjectedByJsPlugin(),
+			dts({
+				tsconfigPath: "./tsconfig.build.json",
+				insertTypesEntry: true,
+				outDir: ["dist/types"]
+			})
+		],
+		build: buildConfig(mode)
 	}
 })
+
+export default config
