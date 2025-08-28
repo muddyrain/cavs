@@ -40,7 +40,8 @@
 		},
 		"dev": {
 			"dependsOn": [
-				"^dev"
+				"^dev",
+				"^build"
 			],
 			"cache": false,
 			"persistent": true

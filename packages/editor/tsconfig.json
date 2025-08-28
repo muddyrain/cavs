@@ -4,8 +4,11 @@
 		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
-		}
+			"@/*": ["src/*"],
+			"react": ["./node_modules/@types/react"]
+		},
+		"types": ["node", "react", "react-dom"]
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }

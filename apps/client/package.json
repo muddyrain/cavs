@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite --force",
+		"dev": "vite -- --force",
 		"lint": "biome check --write .",
 		"preview": "vite preview",
 		"tauri": "tauri",
@@ -13,14 +13,13 @@
 		"tauri:dev": "tauri dev"
 	},
 	"dependencies": {
+		"@cavs/editor": "workspace:*",
+		"@cavs/ts-config": "workspace:*",
+		"@cavs/ui": "workspace:*",
 		"react": "catalog:react-19",
-		"react-dom": "catalog:react-19",
-		"@cavs/editor": "workspace:^",
-		"@cavs/ts-config": "workspace:^",
-		"@cavs/ui": "workspace:^"
+		"react-dom": "catalog:react-19"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.30.1",
 		"@tailwindcss/vite": "^4.1.11",
 		"@tauri-apps/cli": "^2.7.1",
 		"@types/react": "catalog:react-19",
