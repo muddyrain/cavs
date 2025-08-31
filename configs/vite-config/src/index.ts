@@ -5,13 +5,16 @@ import { resolve } from "path"
 import { defineConfig, mergeConfig, UserConfig, UserConfigFnObject } from "vite"
 
 // https://vite.dev/config/
-export const getConfig = (userConfig: UserConfig | UserConfigFnObject = {}) => {
+export const getConfig = (
+	userConfig: UserConfig | UserConfigFnObject = {},
+	rootDir: string = process.cwd()
+) => {
 	const baseConfig: UserConfig = {
-		root: process.cwd(),
+		root: rootDir,
 		plugins: [react(), tailwindcss()],
 		resolve: {
 			alias: {
-				"@/": resolve(process.cwd(), "./src")
+				"@/": resolve(rootDir, "./src")
 			}
 		},
 		build: {
@@ -22,7 +25,7 @@ export const getConfig = (userConfig: UserConfig | UserConfigFnObject = {}) => {
 						entries: [
 							{
 								find: /^@\/(.*)/,
-								replacement: resolve(process.cwd(), "./src/$1")
+								replacement: resolve(rootDir, "./src/$1")
 							}
 						]
 					})

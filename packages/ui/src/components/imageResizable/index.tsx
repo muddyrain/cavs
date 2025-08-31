@@ -5,18 +5,23 @@ interface ImageResizableProps {
 	src: string
 	alt?: string
 	className?: string
+	imageClass?: string
 	style?: React.CSSProperties
 }
-
+export enum Alignment {
+	left = "flex-start",
+	center = "center",
+	right = "flex-end"
+}
 type Corner = "top-left" | "top-right" | "bottom-left" | "bottom-right"
-
 export const ImageResizable: React.FC<ImageResizableProps> = ({
 	src,
 	alt,
 	className = "",
+	imageClass = "",
 	style
 }) => {
-	const [alignment] = useState<"flex-start" | "center" | "flex-end">("center")
+	const [alignment, setAlignment] = useState<Alignment>(Alignment.center)
 	const [imgWidth, setImgWidth] = useState(0)
 	const [imgHeight, setImgHeight] = useState(0)
 	const aspectRatio = useRef(0 / 0)
@@ -72,7 +77,6 @@ export const ImageResizable: React.FC<ImageResizableProps> = ({
 		setImgWidth(newWidth)
 		setImgHeight(newHeight)
 	}
-
 	// 拖拽结束
 	const onDragEnd = () => {
 		dragging.current = null
@@ -81,13 +85,28 @@ export const ImageResizable: React.FC<ImageResizableProps> = ({
 		window.removeEventListener("mouseup", onDragEnd)
 	}
 	return (
-		<div className="image-block flex" style={{ justifyContent: alignment }}>
+		<div className={`image-block my-2 flex ${className}`} style={{ justifyContent: alignment }}>
 			<div className="relative group" style={{ width: imgWidth, height: imgHeight }}>
-				<ImageResizableToolbar />
+				<ImageResizableToolbar
+					alignment={alignment}
+					onClick={(type) => {
+						switch (type) {
+							case Alignment.left:
+								setAlignment(Alignment.left)
+								break
+							case Alignment.center:
+								setAlignment(Alignment.center)
+								break
+							case Alignment.right:
+								setAlignment(Alignment.right)
+								break
+						}
+					}}
+				/>
 				<img
 					src={src}
 					alt={alt}
-					className={`rounded-md w-full h-full select-none ${className}`}
+					className={`relative rounded-md w-full h-full select-none ${imageClass}`}
 					style={style}
 					draggable={false}
 				/>

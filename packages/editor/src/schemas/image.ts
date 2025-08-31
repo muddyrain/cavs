@@ -1,9 +1,12 @@
 import { NodeSpec } from "prosemirror-model"
 
 export const image: NodeSpec = {
-	inline: true,
-	group: "inline",
-	draggable: true,
+	content: "block+",
+	group: "block",
+	defining: true,
+	draggable: false,
+	selectable: false,
+	atom: true,
 	attrs: {
 		src: {},
 		alt: { default: null },
@@ -11,7 +14,7 @@ export const image: NodeSpec = {
 	},
 	parseDOM: [
 		{
-			tag: "img",
+			tag: "img[src]",
 			getAttrs(dom) {
 				return {
 					src: dom.getAttribute("src"),

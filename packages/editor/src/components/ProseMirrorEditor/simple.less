@@ -169,7 +169,6 @@
     max-width: 100%;
     height: auto;
     border-radius: var(--radius);
-    margin: 0.5em 0;
   }
 
   figure {
@@ -201,5 +200,28 @@
   sub {
     font-size: 0.8em;
     vertical-align: sub;
+  }
+
+  .ProseMirror-gapcursor.ProseMirror-widget::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    height: 1rem;
+    width: 1px;
+    background: #000000;
+    animation: pm-gapcursor-blink 1s steps(1) infinite;
+
+    @keyframes pm-gapcursor-blink {
+
+      0%,
+      50% {
+        opacity: 1;
+      }
+
+      51%,
+      100% {
+        opacity: 0;
+      }
+    }
   }
 }

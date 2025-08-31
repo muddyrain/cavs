@@ -1,12 +1,12 @@
 import { EditorType } from "@cavs/editor"
 import {
-	Button,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 	Separator,
+	Toggle,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger
@@ -46,18 +46,18 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Toggle size="sm">
 							<Undo className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>撤销 (Ctrl+Z)</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Toggle size="sm">
 							<Redo className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>重做 (Ctrl+Y)</TooltipContent>
 				</Tooltip>
@@ -69,10 +69,10 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="sm" className="gap-1">
+						<Toggle size="sm" className="gap-1">
 							<Heading1 className="h-4 w-4" />
 							<ChevronDown className="h-3 w-3" />
-						</Button>
+						</Toggle>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DropdownMenuItem>
@@ -97,15 +97,14 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.bold()
 							}}
 						>
 							<Bold className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col">
 						<span>加粗 (Ctrl+B)</span>
@@ -115,15 +114,14 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.italic()
 							}}
 						>
 							<Italic className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col">
 						<span>斜体 (Ctrl+I)</span>
@@ -133,15 +131,14 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.underline()
 							}}
 						>
 							<Underline className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col">
 						<span>下划线 (Ctrl+U)</span>
@@ -151,15 +148,14 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.strikethrough()
 							}}
 						>
 							<Strikethrough className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col">
 						<span>删除线(Ctrl+Shift+X)</span>
@@ -169,15 +165,14 @@ export const EditorToolbar: FC<{
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.code()
 							}}
 						>
 							<Code className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col">
 						<span>代码 (Ctrl+Shift+C) </span>
@@ -192,45 +187,42 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.textAlign("left")
 							}}
 						>
 							<AlignLeft className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>左对齐</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.textAlign("center")
 							}}
 						>
 							<AlignCenter className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>居中对齐</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.textAlign("right")
 							}}
 						>
 							<AlignRight className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>右对齐</TooltipContent>
 				</Tooltip>
@@ -242,45 +234,42 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.bulletList()
 							}}
 						>
 							<List className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>无序列表</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.orderedList()
 							}}
 						>
 							<ListOrdered className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>有序列表</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.blockquote()
 							}}
 						>
 							<Quote className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>引用块</TooltipContent>
 				</Tooltip>
@@ -292,42 +281,41 @@ export const EditorToolbar: FC<{
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Toggle size="sm">
 							<Link className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>插入链接</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
+						<Toggle
 							size="sm"
 							onClick={() => {
 								editor?.commands.image()
 							}}
 						>
 							<ImageIcon className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>插入图片</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Toggle size="sm">
 							<Table className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>插入表格</TooltipContent>
 				</Tooltip>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="sm">
+						<Toggle size="sm">
 							<Code2 className="h-4 w-4" />
-						</Button>
+						</Toggle>
 					</TooltipTrigger>
 					<TooltipContent>代码块</TooltipContent>
 				</Tooltip>
@@ -338,9 +326,9 @@ export const EditorToolbar: FC<{
 			{/* 更多选项 */}
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" size="sm">
+					<Toggle size="sm">
 						<MoreHorizontal className="h-4 w-4" />
-					</Button>
+					</Toggle>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuItem>插入分割线</DropdownMenuItem>

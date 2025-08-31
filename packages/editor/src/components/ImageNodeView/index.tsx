@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import { ImageComponent } from "./ImageComponent"
 
 export const ImageNodeViewFactory: NodeViewConstructor = (node) => {
-	const dom = document.createElement("span")
+	const dom = document.createElement("div")
 	const root = ReactDOM.createRoot(dom)
 	root.render(<ImageComponent src={node.attrs.src} alt={node.attrs.alt} title={node.attrs.title} />)
 	return {

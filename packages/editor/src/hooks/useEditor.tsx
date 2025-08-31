@@ -96,7 +96,6 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 							})
 							const tr = editorView.state.tr.replaceSelectionWith(node, false)
 							editorView.dispatch(tr)
-							editorView.focus()
 						}
 					}
 					// 上传后清空文件列表，避免无法上传同一张图片
