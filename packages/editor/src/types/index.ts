@@ -28,3 +28,15 @@ export interface CoordsType {
 	top: number
 	bottom: number
 }
+
+export type SlashMenuItem = {
+	label: string
+	key: string
+	children: SlashMenuButtonItem[]
+}
+export type SlashMenuButtonItem = {
+	label: string
+	key: string
+	icon?: React.ReactNode
+	action?: (view: EditorView) => void
+}

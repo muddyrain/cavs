@@ -1,12 +1,22 @@
 @import "prosemirror-view/style/prosemirror.css";
 
-.prosemirror-editor {
-  .ProseMirror {
-    min-height: 320px;
-    outline: none;
-    padding: 12px 0 72px 0;
+
+
+.prosemirror-wrapper {
+  .prosemirror-editor {
+    .ProseMirror {
+      min-height: 320px;
+      outline: none;
+      padding: 12px 0 72px 0;
+    }
+
+    font-size: 14px;
+    @import (less) "./simple.less";
   }
 
-  font-size: 14px;
-  @import (less) "./simple.less";
+  .lucide {
+    width: 20px;
+    height: 20px;
+    margin-right: 16px;
+  }
 }

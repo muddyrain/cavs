@@ -7,6 +7,7 @@ import "./index.less"
 import { Toaster } from "@cavs/ui"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { useEditor } from "@/hooks/useEditor"
+import { useMenu } from "@/hooks/useMenu"
 import { plugins } from "@/plugins"
 import { slashCommandPlugin } from "@/plugins/slashCommand"
 import { CoordsType, EditorType, ProseMirrorEditorCommandsType } from "@/types"
@@ -27,6 +28,7 @@ export const ProseMirrorEditor: FC<{
 	const [slashMenuVisible, setSlashMenuVisible] = useState(false)
 
 	const editor = useEditor(props.editor)
+	const { menus } = useMenu(editor)
 	useEffect(() => {
 		// 确保容器存在
 		if (innerEditorRef.current) {
@@ -61,18 +63,12 @@ export const ProseMirrorEditor: FC<{
 	}, [])
 
 	return (
-		<div className="relative">
+		<div className="relative prosemirror-wrapper">
 			<div className="prosemirror-editor" ref={containerRef}></div>
 			{slashMenuVisible && (
 				<SlashMenu
 					coords={menuCoords}
-					items={[
-						{
-							label: "测试",
-							value: "test",
-							icon: "icon"
-						}
-					]}
+					items={menus}
 					onSelect={() => {
 						console.log(1)
 					}}
