@@ -18,7 +18,6 @@ export const getConfig = (
 			}
 		},
 		build: {
-			emptyOutDir: false,
 			rollupOptions: {
 				plugins: [
 					alias({

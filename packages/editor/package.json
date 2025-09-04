@@ -29,9 +29,7 @@
 		"@cavs/ts-config": "workspace:*",
 		"@cavs/ui": "workspace:*",
 		"@cavs/vite-config": "workspace:*",
-		"react": "catalog:react-19",
-		"react-dom": "catalog:react-19",
-		"tw-animate-css": "^1.2.5",
+		"lucide-react": "catalog:",
 		"prosemirror-commands": "^1.7.1",
 		"prosemirror-example-setup": "^1.2.3",
 		"prosemirror-history": "^1.4.1",
@@ -43,7 +41,9 @@
 		"prosemirror-schema-list": "^1.5.1",
 		"prosemirror-state": "^1.4.3",
 		"prosemirror-view": "^1.40.1",
-		"lucide-react": "catalog:"
+		"react": "catalog:react-19",
+		"react-dom": "catalog:react-19",
+		"tw-animate-css": "^1.2.5"
 	},
 	"devDependencies": {
 		"@tailwindcss/vite": "^4.1.4",

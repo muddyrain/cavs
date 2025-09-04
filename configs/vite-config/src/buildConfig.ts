@@ -1,19 +1,25 @@
-import { resolve } from "path"
+import path from "path"
 import { UserConfig } from "vite"
 
+const isExternal = (id: string) =>
+	!id.startsWith(".") && !path.isAbsolute(id) && !id.startsWith("@/")
 export const buildConfig = (mode: string): UserConfig["build"] => {
 	const isDev = mode === "development"
 	return {
 		lib: {
 			cssFileName: "index",
-			entry: resolve(process.cwd(), "./src/index.ts")
+			entry: "./src/index.tsx"
 		},
 		cssCodeSplit: false,
-		minify: "esbuild",
-		target: isDev ? "esnext" : "es2015",
+		minify: false,
+		target: "es2015",
 		sourcemap: isDev,
+		emptyOutDir: false,
 		rollupOptions: {
-			external: ["react", "react-dom"],
+			external: isExternal,
+			preserveEntrySignatures: "strict",
+			preserveSymlinks: true,
+			shimMissingExports: true,
 			output: [
 				{
 					format: "esm",

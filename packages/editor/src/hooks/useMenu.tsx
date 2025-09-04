@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { EditorType, SlashMenuItem } from "@/types"
-export const useMenu = (editor: EditorType) => {
+export const useMenu = (_: EditorType) => {
 	const [menus, setMenus] = useState<SlashMenuItem[]>([
 		{
 			label: "基础",
