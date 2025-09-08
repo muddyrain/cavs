@@ -10,8 +10,18 @@ export function slashCommandPlugin(
 		props: {
 			handleTextInput(view: EditorView, _: number, __: number, text: string): boolean {
 				if (text === "/") {
-					const coords = view.coordsAtPos(view.state.selection.from)
-					onSlash(view, coords)
+					const { state } = view
+					const pos = state.selection.from
+					const $pos = state.doc.resolve(pos)
+					const start = $pos.start()
+					const beforeText = state.doc.textBetween(start, pos, undefined, "\0")
+					// 只有在段落开头或前面没有其他字符时才触发
+					if (beforeText.trim().length === 0) {
+						const coords = view.coordsAtPos(pos)
+						onSlash(view, coords)
+					} else {
+						onClose?.()
+					}
 				} else {
 					onClose?.()
 				}

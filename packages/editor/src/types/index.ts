@@ -14,6 +14,8 @@ export interface ProseMirrorEditorCommandsType {
 	orderedList: () => void
 	blockquote: () => void
 	image: () => void
+	paragraph: () => void
+	heading: (level: 1 | 2 | 3) => void
 }
 
 export interface EditorType {
@@ -36,7 +38,17 @@ export type SlashMenuItem = {
 }
 export type SlashMenuButtonItem = {
 	label: string
-	key: string
+	key: SlashMenuKey
 	icon?: React.ReactNode
 	action?: (view: EditorView) => void
+}
+
+export enum SlashMenuKey {
+	Paragraph = "paragraph",
+	Heading1 = "heading1",
+	Heading2 = "heading2",
+	Heading3 = "heading3",
+	OrderedList = "orderedList",
+	BulletList = "bulletList",
+	CodeBlock = "codeBlock"
 }

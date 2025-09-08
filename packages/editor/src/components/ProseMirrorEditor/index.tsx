@@ -10,7 +10,7 @@ import { useEditor } from "@/hooks/useEditor"
 import { useMenu } from "@/hooks/useMenu"
 import { plugins } from "@/plugins"
 import { slashCommandPlugin } from "@/plugins/slashCommand"
-import { CoordsType, EditorType, ProseMirrorEditorCommandsType } from "@/types"
+import { CoordsType, EditorType, ProseMirrorEditorCommandsType, SlashMenuKey } from "@/types"
 import { SlashMenu } from "../SlashMenu"
 import { createEditorView } from "./editorView"
 
@@ -69,8 +69,40 @@ export const ProseMirrorEditor: FC<{
 				<SlashMenu
 					coords={menuCoords}
 					items={menus}
-					onSelect={() => {
-						console.log(1)
+					onSelect={(item) => {
+						switch (item.key) {
+							case SlashMenuKey.Paragraph:
+								editor.commands.paragraph()
+								break
+							case SlashMenuKey.Heading1:
+								editor.commands.heading(1)
+								break
+							case SlashMenuKey.Heading2:
+								editor.commands.heading(2)
+								break
+							case SlashMenuKey.Heading3:
+								editor.commands.heading(3)
+								break
+							case SlashMenuKey.OrderedList:
+								editor.commands.orderedList()
+								break
+							case SlashMenuKey.BulletList:
+								editor.commands.bulletList()
+								break
+							case SlashMenuKey.CodeBlock:
+								editor.commands.code()
+								break
+							default:
+								break
+						}
+						// 删除斜杠
+						editor.commands.focus()
+						const { state, dispatch } = innerEditorRef.current!
+						const pos = state.selection.from
+						if (pos > 0) {
+							dispatch(state.tr.delete(pos - 1, pos))
+						}
+						setSlashMenuVisible(false)
 					}}
 				/>
 			)}

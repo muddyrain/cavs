@@ -32,6 +32,7 @@ import {
 	Redo,
 	Strikethrough,
 	Table,
+	TypeIcon,
 	Underline,
 	Undo
 } from "lucide-react"
@@ -75,15 +76,35 @@ export const EditorToolbar: FC<{
 						</Toggle>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
-						<DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								editor?.commands.heading(1)
+							}}
+						>
+							<TypeIcon className="h-4 w-4 mr-2" />
+							段落
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								editor?.commands.heading(1)
+							}}
+						>
 							<Heading1 className="h-4 w-4 mr-2" />
 							标题 1
 						</DropdownMenuItem>
-						<DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								editor?.commands.heading(2)
+							}}
+						>
 							<Heading2 className="h-4 w-4 mr-2" />
 							标题 2
 						</DropdownMenuItem>
-						<DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								editor?.commands.heading(3)
+							}}
+						>
 							<Heading3 className="h-4 w-4 mr-2" />
 							标题 3
 						</DropdownMenuItem>

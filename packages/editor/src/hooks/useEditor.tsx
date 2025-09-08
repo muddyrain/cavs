@@ -2,10 +2,10 @@ import { toast } from "@cavs/ui"
 import { setBlockType, toggleMark } from "prosemirror-commands"
 import { wrapInList } from "prosemirror-schema-list"
 import { EditorView } from "prosemirror-view"
-import { useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { SYMBOL_SET_EDITOR_VIEW } from "@/constant/symbol"
 import { schema } from "@/schemas"
-import { AlignType, EditorType, ProseMirrorEditorCommandsType } from "@/types"
+import { EditorType, ProseMirrorEditorCommandsType } from "@/types"
 
 export const useEditor = (_editor?: EditorType): EditorType => {
 	if (_editor) {
@@ -14,64 +14,92 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 	}
 	const [editorView, setEditorView] = useState<EditorView | null>(null)
 	const inputFileRef = useRef<HTMLInputElement>(null)
-	const commands = useMemo(() => {
+	const editorFocus = useCallback(
+		(duration?: number) => {
+			if (editorView?.hasFocus()) {
+				return // 如果已经有焦点，则不需要再次设置焦点
+			}
+			if (duration) {
+				setTimeout(() => {
+					editorView?.focus()
+				}, duration)
+			} else {
+				editorView?.focus()
+			}
+		},
+		[editorView]
+	)
+	const commands: ProseMirrorEditorCommandsType = useMemo(() => {
 		return {
 			editorView,
 			focus: () => {
 				if (editorView?.hasFocus()) {
 					return // 如果已经有焦点，则不需要再次设置焦点
 				}
-				editorView?.focus()
+				editorFocus()
 			},
 			bold: () => {
 				if (!editorView) return
 				toggleMark(schema.marks.strong)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			italic: () => {
 				if (!editorView) return
 				toggleMark(schema.marks.em)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			underline: () => {
 				if (!editorView) return
 				toggleMark(schema.marks.underline)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			strikethrough: () => {
 				if (!editorView) return
 				toggleMark(schema.marks.strikethrough)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			code: () => {
 				if (!editorView) return
 				toggleMark(schema.marks.code)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
-			textAlign: (align: AlignType) => {
+			textAlign: (align) => {
 				if (!editorView) return
 				const { state, dispatch } = editorView
 				const type = state.schema.nodes.paragraph
 				// 设置段落对齐方式
 				if (type) {
 					setBlockType(type, { align })(state, dispatch)
-					editorView.focus()
+					editorFocus()
 				}
 			},
 			bulletList: () => {
 				if (!editorView) return
 				wrapInList(schema.nodes.bullet_list)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			orderedList: () => {
 				if (!editorView) return
 				wrapInList(schema.nodes.ordered_list)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
 			},
 			blockquote: () => {
 				if (!editorView) return
 				wrapInList(schema.nodes.blockquote)(editorView.state, editorView.dispatch)
-				editorView.focus()
+				editorFocus()
+			},
+			paragraph: () => {
+				if (!editorView) return
+				toggleMark(schema.marks.paragraph)(editorView.state, editorView.dispatch)
+				editorFocus()
+			},
+			heading: (level) => {
+				if (!editorView) return
+				const type = schema.nodes.heading
+				if (type) {
+					setBlockType(type, { level })(editorView.state, editorView.dispatch)
+					editorFocus(200) // 这里延迟200ms，避免和菜单的关闭冲突
+				}
 			},
 			image: () => {
 				if (!editorView) return
@@ -105,8 +133,8 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 					}
 				}
 			}
-		} as ProseMirrorEditorCommandsType
-	}, [editorView])
+		}
+	}, [editorView, editorFocus])
 
 	const editorInstance = {
 		commands,
