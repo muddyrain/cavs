@@ -29,6 +29,14 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 		},
 		[editorView]
 	)
+	const clearCurrentLineContent = useCallback(() => {
+		if (!editorView) return
+		const { state, dispatch } = editorView
+		const { $from, $to } = state.selection
+		const tr = state.tr.delete($from.start(), $to.end())
+		dispatch(tr)
+		editorFocus()
+	}, [editorView, editorFocus])
 	const commands: ProseMirrorEditorCommandsType = useMemo(() => {
 		return {
 			editorView,
@@ -90,15 +98,18 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 			},
 			paragraph: () => {
 				if (!editorView) return
-				toggleMark(schema.marks.paragraph)(editorView.state, editorView.dispatch)
-				editorFocus()
+				const type = schema.nodes.paragraph
+				if (type) {
+					setBlockType(type)(editorView.state, editorView.dispatch)
+					editorFocus(100) // 这里延迟200ms，避免和菜单的关闭冲突
+				}
 			},
 			heading: (level) => {
 				if (!editorView) return
 				const type = schema.nodes.heading
 				if (type) {
 					setBlockType(type, { level })(editorView.state, editorView.dispatch)
-					editorFocus(200) // 这里延迟200ms，避免和菜单的关闭冲突
+					editorFocus(100) // 这里延迟200ms，避免和菜单的关闭冲突
 				}
 			},
 			image: () => {
@@ -140,6 +151,7 @@ export const useEditor = (_editor?: EditorType): EditorType => {
 		commands,
 		editorView,
 		inputFileRef,
+		clearCurrentLineContent,
 		[SYMBOL_SET_EDITOR_VIEW]: setEditorView
 	}
 	return editorInstance as EditorType & {

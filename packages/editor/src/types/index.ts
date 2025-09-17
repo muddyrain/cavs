@@ -21,6 +21,7 @@ export interface ProseMirrorEditorCommandsType {
 export interface EditorType {
 	commands: ProseMirrorEditorCommandsType
 	editorView: EditorView | null | undefined
+	clearCurrentLineContent: () => void
 	inputFileRef: React.RefObject<HTMLInputElement>
 }
 

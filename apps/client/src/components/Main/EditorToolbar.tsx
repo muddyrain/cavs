@@ -78,7 +78,7 @@ export const EditorToolbar: FC<{
 					<DropdownMenuContent>
 						<DropdownMenuItem
 							onClick={() => {
-								editor?.commands.heading(1)
+								editor?.commands.paragraph()
 							}}
 						>
 							<TypeIcon className="h-4 w-4 mr-2" />

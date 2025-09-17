@@ -95,13 +95,7 @@ export const ProseMirrorEditor: FC<{
 							default:
 								break
 						}
-						// 删除斜杠
-						editor.commands.focus()
-						const { state, dispatch } = innerEditorRef.current!
-						const pos = state.selection.from
-						if (pos > 0) {
-							dispatch(state.tr.delete(pos - 1, pos))
-						}
+						editor.clearCurrentLineContent()
 						setSlashMenuVisible(false)
 					}}
 				/>
