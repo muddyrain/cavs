@@ -1,4 +1,4 @@
-import { ProseMirrorEditor, useEditor } from "@cavs/editor"
+import { TiptapEditor } from "@cavs/editor"
 import { Button, Input, ScrollArea } from "@cavs/ui"
 import {
 	ChevronDown,
@@ -11,7 +11,6 @@ import {
 	X
 } from "lucide-react"
 import { FC, useState } from "react"
-import { EditorToolbar } from "./EditorToolbar"
 
 interface FileNode {
 	id: string
@@ -57,7 +56,6 @@ const sampleFiles: FileNode[] = [
 export const Main: FC = () => {
 	const [selectedFile, setSelectedFile] = useState("2")
 	const [searchQuery, setSearchQuery] = useState("")
-	const editor = useEditor()
 	const FileTreeItem = ({ node, level = 0 }: { node: FileNode; level?: number }) => {
 		const [isOpen, setIsOpen] = useState(node.isOpen || false)
 
@@ -140,13 +138,11 @@ export const Main: FC = () => {
 						</Button>
 					</div>
 				</div>
-				{/* 富文本编辑工具栏 */}
-				<EditorToolbar editor={editor} />
 				{/* ProseMirror 编辑器区域 */}
 				<div className="flex-1 overflow-hidden">
 					<ScrollArea className="h-full">
 						<div className="p-6 max-w-4xl mx-auto">
-							<ProseMirrorEditor editor={editor} />
+							<TiptapEditor />
 						</div>
 					</ScrollArea>
 				</div>
