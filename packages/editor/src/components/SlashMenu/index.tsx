@@ -21,7 +21,7 @@ export const SlashMenu: React.FC<SlashMenuProps> = ({ coords, items = [], onSele
 			/>
 			<div className="border border-zinc-300 rounded-sm bg-white p-2 mt-2">
 				{filteredItems.map((item) => (
-					<div key={item.key} onClick={() => onSelect(item)}>
+					<div key={item.key}>
 						<div className="font-bold mb-2">{item.label}</div>
 						<ul className="">
 							{item.children.map((cItem) => (
