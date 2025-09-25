@@ -3,26 +3,19 @@ import { BubbleMenu } from "@tiptap/react/menus"
 import StarterKit from "@tiptap/starter-kit"
 import { useMemo } from "react"
 import "@/styles/index.less"
-import { Document } from "@/extensions/Document"
-import { Paragraph } from "@/extensions/Paragraph"
-import { Text } from "@/extensions/Text"
+import { Button } from "@cavs/ui"
 
 export const TiptapEditor = () => {
 	const editor = useEditor({
 		extensions: [
-			Document,
-			Text,
-			Paragraph
-			// StarterKit.configure({
-			// 	heading: {
-			// 		levels: [1, 2, 3]
-			// 	}
-			// })
+			StarterKit.configure({
+				heading: {
+					levels: [1, 2, 3]
+				}
+			})
 		],
-		content: {
-			type: "document",
-			content: [{ type: "paragraph", content: [{ type: "text", text: "Hello World!" }] }]
-		}
+		content:
+			"<p>这是一个 Tiptap 编辑器示例。</p><p>你可以在这里输入内容，并使用工具栏进行格式化。</p>"
 	})
 
 	// Memoize the provider value to avoid unnecessary re-renders
@@ -32,7 +25,17 @@ export const TiptapEditor = () => {
 		<EditorContext.Provider value={providerValue}>
 			<div className="tiptap-wrapper">
 				<EditorContent editor={editor} />
-				<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>
+				<BubbleMenu editor={editor}>
+					<div className="flex gap-x-3">
+						<Button
+							onClick={() => {
+								editor.chain().focus().toggleBold().run()
+							}}
+						>
+							加粗
+						</Button>
+					</div>
+				</BubbleMenu>
 			</div>
 		</EditorContext.Provider>
 	)
