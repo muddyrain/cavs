@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite -- --force",
+		"dev": "vite --host",
 		"lint": "biome check --write .",
 		"preview": "vite preview",
 		"tauri": "tauri",

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "set PORT=1234 y-websocket"
+    "dev": "y-websocket"
   },
   "keywords": [],
   "author": "",
