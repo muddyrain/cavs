@@ -1,4 +1,3 @@
-import { TiptapEditor } from "@cavs/editor"
 import { Button, Input, ScrollArea } from "@cavs/ui"
 import {
 	ChevronDown,
@@ -141,9 +140,7 @@ export const Main: FC = () => {
 				{/* ProseMirror 编辑器区域 */}
 				<div className="flex-1 overflow-hidden">
 					<ScrollArea className="h-full">
-						<div className="p-6 max-w-4xl mx-auto">
-							<TiptapEditor />
-						</div>
+						<div className="p-6 max-w-4xl mx-auto"></div>
 					</ScrollArea>
 				</div>
 			</div>

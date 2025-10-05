@@ -39,5 +39,11 @@
 	"packageManager": "pnpm@10.13.1",
 	"engines": {
 		"node": ">=18"
+	},
+	"pnpm": {
+		"overrides": {
+			"react": "catalog:react-19",
+			"react-dom": "catalog:react-19"
+		}
 	}
 }

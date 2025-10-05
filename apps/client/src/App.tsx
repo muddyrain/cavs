@@ -1,16 +1,15 @@
-import { Footer } from "./components/Footer"
-import { Header } from "./components/Header"
-import { Main } from "./components/Main"
+import { useCreateBlockNote } from "@blocknote/react"
+import { BlockNoteView } from "@blocknote/shadcn"
+import "@blocknote/shadcn/style.css"
+import { zh } from "@blocknote/core/locales"
 
 function App() {
+	const editor = useCreateBlockNote({
+		dictionary: zh
+	})
 	return (
 		<div className="h-screen flex flex-col bg-background">
-			{/* 顶部工具栏 */}
-			<Header />
-			{/* 主内容区域 */}
-			<Main />
-			{/* 底部状态栏 */}
-			<Footer />
+			<BlockNoteView editor={editor} />
 		</div>
 	)
 }

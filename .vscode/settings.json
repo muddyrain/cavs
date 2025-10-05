@@ -1,9 +1,4 @@
 {
-	"eslint.workingDirectories": [
-		{
-			"mode": "auto"
-		}
-	],
 	"editor.formatOnSave": true,
 	"editor.tabSize": 2,
 	"editor.defaultFormatter": "biomejs.biome",
