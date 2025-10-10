@@ -90,15 +90,15 @@ importers:
 
   apps/client:
     dependencies:
-      '@blocknote/core':
+      '@cavs/editor-core':
         specifier: workspace:*
-        version: link:../../packages/core
-      '@blocknote/react':
+        version: link:../../packages/editor-core
+      '@cavs/editor-react':
         specifier: workspace:*
-        version: link:../../packages/react
-      '@blocknote/shadcn':
+        version: link:../../packages/editor-react
+      '@cavs/editor-shadcn':
         specifier: workspace:*
-        version: link:../../packages/shadcn
+        version: link:../../packages/editor-shadcn
       '@cavs/ts-config':
         specifier: workspace:*
         version: link:../../configs/ts-config
@@ -282,7 +282,7 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@6.3.5(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1))
 
-  packages/core:
+  packages/editor-core:
     dependencies:
       '@emoji-mart/data':
         specifier: ^1.2.1
@@ -439,53 +439,11 @@ importers:
         specifier: ^2.0.3
         version: 2.1.9(@types/node@24.1.0)(jsdom@25.0.1)(less@4.4.1)(lightningcss@1.30.1)
 
-  packages/hooks:
-    devDependencies:
-      '@cavs/ts-config':
-        specifier: workspace:*
-        version: link:../../configs/ts-config
-      '@cavs/vite-config':
-        specifier: workspace:*
-        version: link:../../configs/vite-config
-      '@testing-library/react':
-        specifier: ^16.0.0
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/react':
-        specifier: catalog:react-19
-        version: 19.1.0
-      '@types/react-dom':
-        specifier: catalog:react-19
-        version: 19.1.0(@types/react@19.1.0)
-      '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1))
-      jsdom:
-        specifier: ^24.1.1
-        version: 24.1.3
-      react:
-        specifier: 19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: 19.1.0
-        version: 19.1.0(react@19.1.0)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-      vite-plugin-css-injected-by-js:
-        specifier: ^3.5.2
-        version: 3.5.2(vite@7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1))
-      vite-plugin-dts:
-        specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1))
-      vitest:
-        specifier: ^2.0.4
-        version: 2.1.9(@types/node@24.1.0)(jsdom@24.1.3)(less@4.4.1)(lightningcss@1.30.1)
-
-  packages/react:
+  packages/editor-react:
     dependencies:
-      '@blocknote/core':
+      '@cavs/editor-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../editor-core
       '@emoji-mart/data':
         specifier: ^1.2.1
         version: 1.2.1
@@ -572,14 +530,14 @@ importers:
         specifier: ^2.0.3
         version: 2.1.9(@types/node@24.1.0)(jsdom@25.0.1)(less@4.4.1)(lightningcss@1.30.1)
 
-  packages/shadcn:
+  packages/editor-shadcn:
     dependencies:
-      '@blocknote/core':
+      '@cavs/editor-core':
         specifier: workspace:*
-        version: link:../core
-      '@blocknote/react':
+        version: link:../editor-core
+      '@cavs/editor-react':
         specifier: workspace:*
-        version: link:../react
+        version: link:../editor-react
       '@hookform/resolvers':
         specifier: ^3.6.0
         version: 3.10.0(react-hook-form@7.64.0(react@19.1.0))
@@ -683,6 +641,48 @@ importers:
       vite-plugin-externalize-deps:
         specifier: ^0.8.0
         version: 0.8.0(vite@5.4.20(@types/node@20.19.19)(less@4.4.1)(lightningcss@1.30.1))
+
+  packages/hooks:
+    devDependencies:
+      '@cavs/ts-config':
+        specifier: workspace:*
+        version: link:../../configs/ts-config
+      '@cavs/vite-config':
+        specifier: workspace:*
+        version: link:../../configs/vite-config
+      '@testing-library/react':
+        specifier: ^16.0.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@types/react':
+        specifier: catalog:react-19
+        version: 19.1.0
+      '@types/react-dom':
+        specifier: catalog:react-19
+        version: 19.1.0(@types/react@19.1.0)
+      '@vitejs/plugin-react':
+        specifier: ^4.7.0
+        version: 4.7.0(vite@5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1))
+      jsdom:
+        specifier: ^24.1.1
+        version: 24.1.3
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: 19.1.0
+        version: 19.1.0(react@19.1.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+      vite-plugin-css-injected-by-js:
+        specifier: ^3.5.2
+        version: 3.5.2(vite@5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1))
+      vite-plugin-dts:
+        specifier: ^4.5.4
+        version: 4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^2.0.4
+        version: 2.1.9(@types/node@24.1.0)(jsdom@24.1.3)(less@4.4.1)(lightningcss@1.30.1)
 
   packages/spreadsheet:
     dependencies:
@@ -8258,22 +8258,22 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
       '@types/responselike': 1.0.3
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
     optional: true
 
   '@types/debug@4.1.12':
@@ -8293,7 +8293,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.0.7':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.0
@@ -8318,7 +8318,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/linkify-it@5.0.0': {}
 
@@ -8385,21 +8385,21 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/send@0.17.5':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/send@1.2.0':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
 
   '@types/serve-static@1.15.9':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
       '@types/send': 0.17.5
 
   '@types/unist@3.0.3': {}
@@ -8410,7 +8410,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.1.0
+      '@types/node': 20.19.19
     optional: true
 
   '@ungap/structured-clone@1.3.0': {}
@@ -12232,6 +12232,10 @@ snapshots:
       - supports-color
       - terser
 
+  vite-plugin-css-injected-by-js@3.5.2(vite@5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1)):
+    dependencies:
+      vite: 5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1)
+
   vite-plugin-css-injected-by-js@3.5.2(vite@6.3.5(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
     dependencies:
       vite: 6.3.5(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)
@@ -12239,10 +12243,6 @@ snapshots:
   vite-plugin-css-injected-by-js@3.5.2(vite@6.3.6(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
     dependencies:
       vite: 6.3.6(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)
-
-  vite-plugin-css-injected-by-js@3.5.2(vite@7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
-    dependencies:
-      vite: 7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)
 
   vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.7.3)(vite@6.3.6(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
     dependencies:
@@ -12263,6 +12263,25 @@ snapshots:
       - rollup
       - supports-color
 
+  vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1)):
+    dependencies:
+      '@microsoft/api-extractor': 7.53.0(@types/node@24.1.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
+      '@volar/typescript': 2.4.23
+      '@vue/language-core': 2.2.0(typescript@5.8.3)
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.1.2
+      magic-string: 0.30.19
+      typescript: 5.8.3
+    optionalDependencies:
+      vite: 5.4.20(@types/node@24.1.0)(less@4.4.1)(lightningcss@1.30.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
   vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@6.3.5(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
     dependencies:
       '@microsoft/api-extractor': 7.53.0(@types/node@24.1.0)
@@ -12277,25 +12296,6 @@ snapshots:
       typescript: 5.8.3
     optionalDependencies:
       vite: 6.3.5(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-
-  vite-plugin-dts@4.5.4(@types/node@24.1.0)(rollup@4.52.4)(typescript@5.8.3)(vite@7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)):
-    dependencies:
-      '@microsoft/api-extractor': 7.53.0(@types/node@24.1.0)
-      '@rollup/pluginutils': 5.3.0(rollup@4.52.4)
-      '@volar/typescript': 2.4.23
-      '@vue/language-core': 2.2.0(typescript@5.8.3)
-      compare-versions: 6.1.1
-      debug: 4.4.3
-      kolorist: 1.8.0
-      local-pkg: 1.1.2
-      magic-string: 0.30.19
-      typescript: 5.8.3
-    optionalDependencies:
-      vite: 7.1.9(@types/node@24.1.0)(jiti@2.6.1)(less@4.4.1)(lightningcss@1.30.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup

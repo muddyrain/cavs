@@ -1,7 +1,7 @@
-import { useCreateBlockNote } from "@blocknote/react"
-import { BlockNoteView } from "@blocknote/shadcn"
-import "@blocknote/shadcn/style.css"
-import { zh } from "@blocknote/core/locales"
+import { useCreateBlockNote } from "@cavs/editor-react"
+import { BlockNoteView } from "@cavs/editor-shadcn"
+import "@cavs/editor-shadcn/style.css"
+import { zh } from "@cavs/editor-core/locales"
 
 function App() {
 	const editor = useCreateBlockNote({

@@ -14,9 +14,9 @@
 	},
 	"dependencies": {
 		"@cavs/ts-config": "workspace:*",
-		"@blocknote/react": "workspace:*",
-		"@blocknote/core": "workspace:*",
-		"@blocknote/shadcn": "workspace:*",
+		"@cavs/editor-react": "workspace:*",
+		"@cavs/editor-core": "workspace:*",
+		"@cavs/editor-shadcn": "workspace:*",
 		"@cavs/ui": "workspace:*",
 		"react": "catalog:react-19",
 		"react-dom": "catalog:react-19"
