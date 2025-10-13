@@ -19,7 +19,8 @@
 		"@cavs/editor-shadcn": "workspace:*",
 		"@cavs/ui": "workspace:*",
 		"react": "catalog:react-19",
-		"react-dom": "catalog:react-19"
+		"react-dom": "catalog:react-19",
+		"@xyflow/react": "12.8.3"
 	},
 	"devDependencies": {
 		"@tailwindcss/vite": "^4.1.11",
