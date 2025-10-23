@@ -14,7 +14,7 @@ export const getConfig = (
 		plugins: [react(), tailwindcss()],
 		resolve: {
 			alias: {
-				"@/": resolve(rootDir, "./src")
+				"@": resolve(rootDir, "./src")
 			}
 		},
 		build: {

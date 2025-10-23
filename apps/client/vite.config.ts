@@ -6,17 +6,9 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
-	server: {
-		watch: {
-			ignored: ["!**/node_modules/**", "!**/packages/**/dist/**"]
-		}
-	},
 	resolve: {
 		alias: {
-			"@/": resolve(__dirname, "./src")
+			"@": resolve(__dirname, "./src")
 		}
-	},
-	optimizeDeps: {
-		exclude: ["@cavs/editor"]
 	}
 })
