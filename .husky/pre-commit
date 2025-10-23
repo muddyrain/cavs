@@ -1,5 +1,0 @@
-pnpm lint
-
-pnpm format:packages
-
-git add .

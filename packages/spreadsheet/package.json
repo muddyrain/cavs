@@ -14,10 +14,7 @@
 	"module": "./dist/es/index.js",
 	"types": "./dist/types/index.d.ts",
 	"typings": "./dist/types/index.d.ts",
-	"files": [
-		"dist",
-		"README.md"
-	],
+	"files": ["dist", "README.md"],
 	"scripts": {
 		"build": "tsc && vite build --mode production",
 		"build:dev": "vite build --mode development",
