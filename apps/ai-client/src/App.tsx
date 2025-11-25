@@ -6,11 +6,26 @@ import {
 	Button,
 	Card,
 	CardContent,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
 	Input,
 	ScrollArea,
 	Separator
 } from "@cavs/ui"
-import { Bot, Copy, Loader2, Send, Sparkles, ThumbsDown, ThumbsUp, User } from "lucide-react"
+import {
+	Bot,
+	Copy,
+	Loader2,
+	MessageSquare,
+	Send,
+	Sparkles,
+	ThumbsDown,
+	ThumbsUp,
+	Trash2,
+	User
+} from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
@@ -21,7 +36,11 @@ interface Message {
 	timestamp: Date
 	isStreaming?: boolean
 }
-
+// 添加历史会话接口
+interface HistorySession {
+	role: "user" | "assistant"
+	content: string
+}
 function App() {
 	const [messages, setMessages] = useState<Message[]>([
 		{
@@ -33,6 +52,9 @@ function App() {
 	])
 	const [input, setInput] = useState("")
 	const [isLoading, setIsLoading] = useState(false)
+	const [showHistoryDialog, setShowHistoryDialog] = useState(false)
+	const [historyLoading, setHistoryLoading] = useState(false)
+	const [historySessions, setHistorySessions] = useState<HistorySession[]>([])
 	const scrollAreaRef = useRef<HTMLDivElement>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 
@@ -133,6 +155,45 @@ function App() {
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text)
+	}
+
+	const showHistory = async () => {
+		try {
+			setHistoryLoading(true)
+			const response = await fetch("/api/history", {
+				method: "GET",
+				headers: { "Content-Type": "application/json" }
+			})
+			setShowHistoryDialog(true)
+			if (response.ok) {
+				const data = await response.json()
+				setHistorySessions(data.conversations || [])
+			}
+		} catch (error) {
+			console.error("Error fetching history:", error)
+		} finally {
+			setHistoryLoading(false)
+		}
+	}
+
+	const clearHistory = async () => {
+		if (!confirm("确定要清除历史记录吗？")) {
+			return
+		}
+		try {
+			const response = await fetch("/api/clear", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" }
+			})
+			if (response.ok) {
+				alert("历史记录已清除")
+				setMessages([])
+			} else {
+				alert("请稍后再试")
+			}
+		} catch {
+			alert("清除失败，请检查网络连接")
+		}
 	}
 
 	return (
@@ -285,6 +346,26 @@ function App() {
 					<Button
 						variant="outline"
 						size="sm"
+						onClick={() => {
+							showHistory()
+						}}
+						disabled={isLoading}
+					>
+						查看历史
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => {
+							clearHistory()
+						}}
+						disabled={isLoading}
+					>
+						清除历史
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
 						onClick={() => setInput("帮我写一段代码")}
 						disabled={isLoading}
 					>
@@ -308,6 +389,87 @@ function App() {
 					</Button>
 				</div>
 			</div>
+
+			{/* 历史记录弹框 */}
+			<Dialog open={showHistoryDialog} onOpenChange={setShowHistoryDialog}>
+				<DialogContent className="max-w-2xl max-h-[80vh]">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2">
+							<MessageSquare className="w-5 h-5" />
+							历史记录
+						</DialogTitle>
+					</DialogHeader>
+
+					<div className="flex flex-col gap-4">
+						{historyLoading ? (
+							<div className="flex items-center justify-center py-8">
+								<Loader2 className="w-6 h-6 animate-spin mr-2" />
+								<span className="text-muted-foreground">加载历史记录中...</span>
+							</div>
+						) : (
+							<ScrollArea className="h-[400px] pr-4">
+								<div className="space-y-3">
+									{historySessions.length === 0 ? (
+										<div className="text-center py-8 text-muted-foreground">
+											<MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
+											<p>暂无历史记录</p>
+										</div>
+									) : (
+										historySessions.map((session, index) => (
+											<Card
+												key={index}
+												className="transition-all duration-200 hover:shadow-md cursor-pointer group"
+											>
+												<CardContent className="p-4">
+													<div className="flex items-start justify-between gap-3">
+														<div className="flex-1 space-y-2">
+															<div className="flex items-center gap-2">
+																{session.role === "user" ? (
+																	<User className="w-4 h-4 text-muted-foreground" />
+																) : (
+																	<Bot className="w-4 h-4 text-blue-500" />
+																)}
+																<Badge
+																	variant={session.role === "user" ? "default" : "secondary"}
+																	className="text-xs"
+																>
+																	{session.role === "user" ? "用户" : "AI助手"}
+																</Badge>
+															</div>
+															<p className="text-sm text-foreground line-clamp-3 leading-relaxed">
+																{session.content}
+															</p>
+														</div>
+														<Button
+															variant="ghost"
+															size="sm"
+															className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 h-8 w-8 p-0 text-muted-foreground hover:text-destructive shrink-0"
+															onClick={(e) => {
+																e.stopPropagation()
+															}}
+														>
+															<Trash2 className="w-4 h-4" />
+														</Button>
+													</div>
+												</CardContent>
+											</Card>
+										))
+									)}
+								</div>
+							</ScrollArea>
+						)}
+
+						<div className="flex justify-between items-center pt-2 border-t">
+							<p className="text-sm text-muted-foreground">共 {historySessions.length} 个会话</p>
+							<div className="flex gap-2">
+								<Button variant="default" size="sm" onClick={() => setShowHistoryDialog(false)}>
+									关闭
+								</Button>
+							</div>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }
