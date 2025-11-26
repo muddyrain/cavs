@@ -242,7 +242,7 @@ function App() {
 								>
 									<Card
 										className={cn(
-											"shadow-sm transition-all duration-200",
+											"shadow-sm transition-all duration-200 py-0",
 											message.role === "user"
 												? "bg-primary text-primary-foreground ml-auto"
 												: "bg-card hover:shadow-md"
