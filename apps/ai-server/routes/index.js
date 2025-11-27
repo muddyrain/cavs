@@ -1,5 +1,9 @@
 const express = require("express")
 const router = express.Router()
+const { getWeather } = require("../utils/weatherHandler")
+const { translate } = require("../utils/translateHandler")
+const { buildAnswerPrompt, buildFunctionCallPrompt } = require("../utils/promptTemplates")
+const { callLLM, callLLMStream } = require("../utils/LLM")
 
 // 要支持上下文，背后的原理非常简单：
 // 拿一个数组来存储会话的历史记录，之后每一次会将历史会话记录一同发给大模型
@@ -10,80 +14,86 @@ const conversations = [] // 该数组存储会话记录
  *  {role: "assistant", content: "大模型的回复"},
  * ]
  */
-
+const toolMap = {
+	getWeather,
+	translate
+}
 // 注意，需要是一个post请求
 router.post("/ask", async (req, res) => {
 	// 拿到用户的问题
 	const question = req.body.question || ""
 
-	// 接下来需要将用户问题放入到提示词模板
-	// const prompt = `
-	//   你是一个中文智能助手，请使用简体中文回答用户的问题。
-	// 	你的回答应简洁明了，直接切中要点。
-	//   问题：${question}
-	// `
-
-	// 每一次 prompt 会将历史会话带过去
-	const prompt = [
-		"你是一个中文智能助手，请使用中文回答用户的问题。",
-		// 历史记录
-		...conversations.map((item) => `${item.role === "user" ? "用户" : "助手"}：${item.content}`),
-		`用户的问题：${question}`
-	].join("\n")
-
-	const response = await fetch("http://localhost:11434/api/generate", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			model: "llama3",
-			prompt,
-			stream: true // 是否开启流式
-		})
-	})
-
 	res.setHeader("Content-Type", "text/event-stream;charset=utf-8")
 	// 禁止缓存 确保客户端每次都能获取到最新数据
 	res.setHeader("Cache-Control", "no-cache")
 
-	const reader = response.body.getReader()
+	let finalResponse = ""
 
-	const decoder = new TextDecoder("utf-8")
+	const functionCallPromt = buildFunctionCallPrompt(question)
+	const functionCallResult = await callLLM(functionCallPromt)
 
-	let fullResponse = ""
-
-	while (true) {
-		const { done, value } = await reader.read()
-		if (done) break
-		// 将数据块转换为字符串
-		const chunk = decoder.decode(value, {
-			stream: true
+	console.log("functionCallResult", functionCallResult)
+	if (functionCallResult.trim() === "无函数调用") {
+		// 直接回答用户问题
+		const promt = [
+			"你是一个中文智能助手，具有工具调用能力。请严格使用中文回复用户的问题：",
+			`用户的问题是：${question}`
+		].join("\n")
+		const answerPrompt = await callLLMStream(promt, (chunk) => {
+			res.write(`${chunk}\n\n`)
 		})
-		const lines = chunk.split("\n").filter((line) => line.trim())
-		/**
-		 * lines =['{"response":"..."}', '{"response":"..."}']
-		 */
-		for (const line of lines) {
-			try {
-				const data = JSON.parse(line) // data = { response : '...'}
-				if (data.response) {
-					fullResponse += data.response // 拼接完整回答
-					// 发送到客户端
-					res.write(data.response)
+		finalResponse = answerPrompt
+	} else {
+		// 需要调用函数
+		try {
+			const toolCalls = JSON.parse(functionCallResult)
+
+			const toolResults = []
+
+			for (const tool of toolCalls) {
+				const { function: functionName, args } = tool
+				if (toolMap[functionName]) {
+					try {
+						const toolResult = await toolMap[functionName](args)
+						toolResults.push({
+							function: functionName,
+							result: toolResult,
+							args
+						})
+					} catch (error) {
+						console.error("调用工具出错:", error.message)
+						toolResults.push({
+							function: functionName,
+							result: `调用工具时出错：${error.message}`,
+							args
+						})
+					}
+				} else {
+					console.error("未知的工具：", functionName)
+					toolResults.push({
+						function: functionName,
+						result: `未知的工具：${functionName}`,
+						args
+					})
 				}
-			} catch (error) {
-				console.error("解析数据出错:", error.message)
 			}
+			const answerPromt = buildAnswerPrompt(question, toolResults)
+			console.log("answerPromt", answerPromt)
+			const answerPrompt = await callLLMStream(answerPromt, (chunk) => {
+				res.write(`${chunk}\n`)
+			})
+			finalResponse = answerPrompt
+		} catch (error) {
+			console.error("解析函数调用结果出错:", error.message)
 		}
 	}
 
 	conversations.push({ role: "user", content: question })
-	conversations.push({ role: "assistant", content: fullResponse })
-
+	conversations.push({ role: "assistant", content: finalResponse })
 	// 限制对话长度，保留最近的20轮对话
 	if (conversations.length > 40) {
 		conversations.splice(0, conversations.length - 40)
 	}
-
 	res.end()
 })
 

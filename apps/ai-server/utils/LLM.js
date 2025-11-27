@@ -75,5 +75,5 @@ async function callLLM({ prompt, stream = false, callback }) {
 
 module.exports = {
 	callLLM: (prompt) => callLLM({ prompt }),
-	callLLMStream: ({ prompt, callback }) => callLLM({ prompt, stream: true, callback })
+	callLLMStream: (prompt, callback) => callLLM({ prompt, stream: true, callback })
 }

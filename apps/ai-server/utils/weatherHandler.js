@@ -1,7 +1,8 @@
-const generateWeatherJWT = require("./wetherJwt")
+const generateWeatherJWT = require("./weatherJwt")
 
 // 提供天气服务的，同样是直接对接第三方服务平台
 const HEFENG_API_KEY = process.env.HEFENG_API_KEY
+const apiHost = process.env.HEFENG_API_HOST
 
 /**
  * 格式化天气
@@ -41,7 +42,6 @@ function formatDate(text) {
  */
 async function getCityLocation(city) {
 	const jwt = await generateWeatherJWT(process.env.HEFENG_VOUCHER_ID, process.env.HEFENG_PROJECT_ID)
-	const apiHost = process.env.HEFENG_API_HOST
 	const url = `https://${apiHost}/geo/v2/city/lookup?location=${encodeURIComponent(
 		city
 	)}&key=${HEFENG_API_KEY}`
@@ -64,7 +64,7 @@ async function getCityLocation(city) {
  * @param {*} city 城市
  * @param {*} date 日期
  */
-async function getWether({ city, date }) {
+async function getWeather({ city, date }) {
 	// 参考第三方服务商文档
 	const formattedDate = formatDate(date)
 	if (!formattedDate) {
@@ -73,13 +73,14 @@ async function getWether({ city, date }) {
 	}
 
 	const locationId = await getCityLocation(city)
+	console.log("locationId", locationId)
 	if (!locationId) {
 		console.error("无法识别城市:", city)
 		return `无法识别城市："${city}"`
 	}
 
 	try {
-		const url = `https://devapi.qweather.com/v7/weather/7d?location=${locationId}&key=${HEFENG_API_KEY}`
+		const url = `https://${apiHost}/v7/weather/3d?location=${locationId}&key=${HEFENG_API_KEY}`
 		const res = await fetch(url)
 		const data = await res.json() // 拿到的是一周的天气
 
@@ -87,7 +88,6 @@ async function getWether({ city, date }) {
 			console.error("天气API返回错误:", data.code)
 			return "获取天气数据失败"
 		}
-
 		const match = data.daily.find((d) => d.fxDate === formattedDate) // 过滤出需要的那一天的天气数据
 		if (!match) {
 			console.error("没有找到对应日期的天气数据:", formattedDate)
@@ -95,7 +95,6 @@ async function getWether({ city, date }) {
 		}
 
 		const result = `📍 ${city}（${formattedDate}）天气：${match.textDay}，气温 ${match.tempMin}°C ~ ${match.tempMax}°C`
-		console.log("天气查询成功:", result)
 		return result
 	} catch (error) {
 		console.error("天气查询异常:", error)
@@ -104,5 +103,5 @@ async function getWether({ city, date }) {
 }
 
 module.exports = {
-	getWether
+	getWeather
 }
