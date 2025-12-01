@@ -1,3 +1,5 @@
+// 提示词模板
+
 function buildFunctionCallPrompt(userInput) {
 	return `
     你是一个中文智能助手，具有工具调用能力。请严格按照以下规则回复：
@@ -60,7 +62,6 @@ function buildFunctionCallPrompt(userInput) {
     记住：如果需要调用函数，请确保返回的JSON格式完全正确，参数值不要有额外的引号！
     `.trim()
 }
-
 /**
  * 🤖 工具已执行后的回答 Prompt
  * @param {string} userInput - 用户原始的问题
@@ -104,6 +105,6 @@ function buildAnswerPrompt(userInput, results) {
 }
 
 module.exports = {
-	buildFunctionCallPrompt,
-	buildAnswerPrompt
+	buildAnswerPrompt,
+	buildFunctionCallPrompt
 }

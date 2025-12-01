@@ -91,6 +91,20 @@ function App() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ question })
 		})
+		if (!res.ok) {
+			console.error("请求出错:", res.statusText)
+			setIsLoading(false)
+			setMessages((prev) => [
+				...prev,
+				{
+					id: Date.now().toString(),
+					role: "assistant",
+					content: "请求失败，请稍后再试。",
+					timestamp: new Date()
+				}
+			])
+			return
+		}
 		const reader = await res.body?.getReader()
 		if (!reader) {
 			setIsLoading(false)
@@ -104,40 +118,44 @@ function App() {
 			const { done, value } = await reader.read()
 			if (done) break
 			// 这里假设服务器发送的是文本数据
-			const chunk = decoder.decode(value)
+			const chunk = decoder.decode(value, { stream: true })
 			const lines = chunk.split("\n").filter((line) => line.trim())
-			setIsLoading(false)
+
 			for (const line of lines) {
 				try {
 					if (line) {
-						// 只要开始有数据就关掉加载状态
-						botMessage += line
-						// 实时更新消息内容
-						setMessages((prev) => {
-							// 检查是否已经有一个正在流式传输的消息
-							const lastMessage = prev[prev.length - 1]
-							if (lastMessage && lastMessage.role === "assistant" && lastMessage.isStreaming) {
-								// 更新现有的消息
-								const updatedMessages = [...prev]
-								updatedMessages[updatedMessages.length - 1] = {
-									...lastMessage,
-									content: botMessage
-								}
-								return updatedMessages
-							} else {
-								// 添加一个新的流式传输消息
-								return [
-									...prev,
-									{
-										id: Date.now().toString(),
-										role: "assistant",
-										content: botMessage,
-										timestamp: new Date(),
-										isStreaming: true
+						const data = JSON.parse(line) // data = {"response":"你好"}
+						if (data.response) {
+							// 只要开始有数据回来了
+							setIsLoading(false)
+							botMessage += data.response // 每次回来的数据拼接到之前的数据里面
+							// 实时更新消息内容
+							setMessages((prev) => {
+								// 检查是否已经有一个正在流式传输的消息
+								const lastMessage = prev[prev.length - 1]
+								if (lastMessage && lastMessage.role === "assistant" && lastMessage.isStreaming) {
+									// 更新现有的消息
+									const updatedMessages = [...prev]
+									updatedMessages[updatedMessages.length - 1] = {
+										...lastMessage,
+										content: botMessage
 									}
-								]
-							}
-						})
+									return updatedMessages
+								} else {
+									// 添加一个新的流式传输消息
+									return [
+										...prev,
+										{
+											id: Date.now().toString(),
+											role: "assistant",
+											content: botMessage,
+											timestamp: new Date(),
+											isStreaming: true
+										}
+									]
+								}
+							})
+						}
 					}
 				} catch (error) {
 					console.error("解析数据出错:", error)

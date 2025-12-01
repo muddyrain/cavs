@@ -27,73 +27,83 @@ router.post("/ask", async (req, res) => {
 	// 禁止缓存 确保客户端每次都能获取到最新数据
 	res.setHeader("Cache-Control", "no-cache")
 
-	let finalResponse = ""
+	// 首先需要大模型来判断是否需要调用工具
+	const functionCallPrompt = buildFunctionCallPrompt(question)
 
-	const functionCallPromt = buildFunctionCallPrompt(question)
-	const functionCallResult = await callLLM(functionCallPromt)
+	const conversationsList = [...conversations, { role: "user", content: functionCallPrompt }]
 
-	console.log("functionCallResult", functionCallResult)
+	const functionCallResult = await callLLM(conversationsList)
+
+	// functionCallResult 会有两种情况
+	// 1. 无函数调用
+	// 2. [{"function": "translate", "args": { "input": "我今天很开心" }}]
+
+	let finalResponse = "" // 存储最终的回复，因为每一次回复需要更新到历史会话里面
+
 	if (functionCallResult.trim() === "无函数调用") {
-		// 直接回答用户问题
-		const promt = [
-			"你是一个中文智能助手，具有工具调用能力。请严格使用中文回复用户的问题：",
-			`用户的问题是：${question}`
-		].join("\n")
-		const answerPrompt = await callLLMStream(promt, (chunk) => {
-			res.write(`${chunk}\n\n`)
+		const prompt = [...conversations, { role: "user", content: question }]
+
+		finalResponse = await callLLMStream(prompt, (chunk) => {
+			res.write(`${JSON.stringify({ response: chunk })}\n`)
 		})
-		finalResponse = answerPrompt
 	} else {
-		// 需要调用函数
+		// 进入此分支，说明需要调用工具
 		try {
-			const toolCalls = JSON.parse(functionCallResult)
+			const toolCalls = JSON.parse(functionCallResult) // [{"function": "translate", "args": { "input": "我今天很开心" }}]
 
-			const toolResults = []
-
+			const toolsResult = [] // 存储工具调用的结果
 			for (const tool of toolCalls) {
 				const { function: functionName, args } = tool
-				if (toolMap[functionName]) {
+				if (toolsMap[functionName]) {
+					// 如果有这个工具，那就调用
 					try {
-						const toolResult = await toolMap[functionName](args)
-						toolResults.push({
+						const result = await toolsMap[functionName](args) // 调用工具
+						toolsResult.push({
 							function: functionName,
-							result: toolResult,
-							args
+							args,
+							result
 						})
-					} catch (error) {
-						console.error("调用工具出错:", error.message)
-						toolResults.push({
+					} catch (err) {
+						console.error(`${functionName}工具调用失败☹️`, err)
+						toolsResult.push({
 							function: functionName,
-							result: `调用工具时出错：${error.message}`,
-							args
+							args,
+							result: `工具调用失败☹️：${err.message}`
 						})
 					}
 				} else {
-					console.error("未知的工具：", functionName)
-					toolResults.push({
+					// 进入此分支，说明不存在这个工具
+					console.error(`${functionName}工具不存在`)
+					toolsResult.push({
 						function: functionName,
-						result: `未知的工具：${functionName}`,
-						args
+						args,
+						result: `未知工具☹️`
 					})
 				}
 			}
-			const answerPromt = buildAnswerPrompt(question, toolResults)
-			console.log("answerPromt", answerPromt)
-			const answerPrompt = await callLLMStream(answerPromt, (chunk) => {
-				res.write(`${chunk}\n`)
+
+			// 出了上面的 for 循环后，toolsResult 里面就存储了调用工具的结果
+			// 接下来还是需要构建一个提示词
+			const answerPrompt = buildAnswerPrompt(question, toolsResult)
+
+			const prompt = [...conversations, { role: "user", content: answerPrompt }]
+
+			finalResponse = await callLLMStream(prompt, (chunk) => {
+				res.write(`${JSON.stringify({ response: chunk })}\n`)
 			})
-			finalResponse = answerPrompt
-		} catch (error) {
-			console.error("解析函数调用结果出错:", error.message)
+		} catch (err) {
+			console.error(`解析工具的JSON失败☹️：${err}`)
 		}
 	}
 
-	conversations.push({ role: "user", content: question })
-	conversations.push({ role: "assistant", content: finalResponse })
-	// 限制对话长度，保留最近的20轮对话
-	if (conversations.length > 40) {
-		conversations.splice(0, conversations.length - 40)
-	}
+	// 将这一次的答案记录到历史会话里面
+	conversations.push(
+		{ role: "user", content: question },
+		{ role: "assistant", content: finalResponse }
+	)
+
+	if (conversations.length > 20) conversations.splice(0, conversations.length - 20)
+
 	res.end()
 })
 

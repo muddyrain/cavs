@@ -1,6 +1,7 @@
 const LLM_ENDPOINT = process.env.LLM_ENDPOINT
 const LLM_MODEL = process.env.LLM_MODEL
 const LLM_TIMEOUT_MS = process.env.LLM_TIMEOUT_MS
+const LLM_KEY = process.env.LLM_KEY
 
 // 做一个优化 ， 封装一个 带超时机制的 fetch 方法
 async function fetchWithTimeout(url, options, timeout = LLM_TIMEOUT_MS) {
@@ -23,13 +24,13 @@ async function fetchWithTimeout(url, options, timeout = LLM_TIMEOUT_MS) {
 	}
 }
 
-async function callLLM({ prompt, stream = false, callback }) {
+async function callLLM({ messages, stream = false, callback }) {
 	const response = await fetchWithTimeout(LLM_ENDPOINT, {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json", Authorization: `Bearer ${LLM_KEY}` },
 		body: JSON.stringify({
 			model: LLM_MODEL,
-			prompt,
+			messages,
 			stream
 		})
 	})
@@ -39,7 +40,7 @@ async function callLLM({ prompt, stream = false, callback }) {
 
 	if (!stream) {
 		const data = await response.json()
-		return data.response
+		return data.choices?.[0]?.message?.content || ""
 	}
 
 	const reader = response.body.getReader()
@@ -47,25 +48,46 @@ async function callLLM({ prompt, stream = false, callback }) {
 	const decoder = new TextDecoder("utf-8")
 
 	let fullResponse = ""
-
 	while (true) {
 		const { done, value } = await reader.read()
 		if (done) break
-		const chunk = decoder.decode(value, {
-			stream: true
-		})
+		// 将新数据添加到缓冲区
+		const chunk = decoder.decode(value, { stream: true })
+		// 按行分割处理
 		const lines = chunk.split("\n").filter((line) => line.trim())
 		for (const line of lines) {
-			try {
-				const data = JSON.parse(line)
-				if (data.response) {
-					fullResponse += data.response
-					if (callback) {
-						callback(data.response)
-					}
+			const trimmedLine = line.trim()
+			if (!line.startsWith("data: ")) continue
+
+			// 跳过空行
+			if (!trimmedLine) continue
+
+			// 处理 SSE 数据行
+			if (trimmedLine.startsWith("data: ")) {
+				const dataContent = trimmedLine.slice(6) // 移除 "data: " 前缀
+
+				// 检查是否为结束标记
+				if (dataContent === "[DONE]") {
+					break
 				}
-			} catch (error) {
-				console.error("解析数据出错:", error.message)
+				try {
+					const data = JSON.parse(dataContent)
+
+					// 提取内容
+					const content = data.choices?.[0]?.delta?.content
+					if (content) {
+						fullResponse += content
+						if (callback) {
+							callback(content)
+						}
+					}
+					// 检查是否完成
+					if (data.choices?.[0]?.finish_reason === "stop") {
+						break
+					}
+				} catch (error) {
+					console.error("解析SSE数据出错:", error.message, "原始数据:", dataContent)
+				}
 			}
 		}
 	}
@@ -74,6 +96,6 @@ async function callLLM({ prompt, stream = false, callback }) {
 }
 
 module.exports = {
-	callLLM: (prompt) => callLLM({ prompt }),
-	callLLMStream: (prompt, callback) => callLLM({ prompt, stream: true, callback })
+	callLLM: (messages) => callLLM({ messages }),
+	callLLMStream: (messages, callback) => callLLM({ messages, stream: true, callback })
 }
