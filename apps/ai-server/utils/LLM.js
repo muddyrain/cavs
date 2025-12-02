@@ -24,30 +24,29 @@ async function fetchWithTimeout(url, options, timeout = LLM_TIMEOUT_MS) {
 	}
 }
 
-async function callLLM({ messages, stream = false, callback }) {
+async function callLLM(messages, tools = null, callback) {
+	const requestBody = {
+		model: LLM_MODEL,
+		messages,
+		stream: true
+	}
+	if (tools) {
+		requestBody.tools = tools
+	}
 	const response = await fetchWithTimeout(LLM_ENDPOINT, {
 		method: "POST",
 		headers: { "Content-Type": "application/json", Authorization: `Bearer ${LLM_KEY}` },
-		body: JSON.stringify({
-			model: LLM_MODEL,
-			messages,
-			stream
-		})
+		body: JSON.stringify(requestBody)
 	})
 	if (!response.ok) {
 		throw new Error(`LLM请求失败，状态码：${response.status} ${response.statusText}`)
 	}
 
-	if (!stream) {
-		const data = await response.json()
-		return data.choices?.[0]?.message?.content || ""
-	}
-
 	const reader = response.body.getReader()
-
 	const decoder = new TextDecoder("utf-8")
 
-	let fullResponse = ""
+	let fullResponse = "" // 用于存储模型这一次的完整回复
+	let toolCalls = [] // 该数组用于存储要调用的工具
 	while (true) {
 		const { done, value } = await reader.read()
 		if (done) break
@@ -71,19 +70,48 @@ async function callLLM({ messages, stream = false, callback }) {
 					break
 				}
 				try {
+					// jsonStr = '{"choices":[{"delta":{"content":"你好，"}}]}'
+					// jsonStr = '{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"abc","function":{"name":"getWeather","arguments":"{\\"city\\":\\"北"}}]}}]}'
 					const data = JSON.parse(dataContent)
-
-					// 提取内容
-					const content = data.choices?.[0]?.delta?.content
-					if (content) {
-						fullResponse += content
-						if (callback) {
-							callback(content)
+					const delta = data.choices?.[0]?.delta
+					if (delta) {
+						if (delta.content) {
+							// 进入此分支，说明模型返回的是文本内容
+							fullResponse += delta.content
+							callback?.(delta.content)
 						}
-					}
-					// 检查是否完成
-					if (data.choices?.[0]?.finish_reason === "stop") {
-						break
+						if (delta.tool_calls) {
+							// 进入此分支，说明模型返回的是工具调用
+							// 这里面核心就是要将需要调用的工具添加到 toolCalls 数组里面
+							// 大模型返回的 tool_calls 是一个数组，因为可能涉及到调用多个工具
+							for (const toolCall of delta.tool_calls) {
+								const existingCall = toolCalls.find((call) => call.index === toolCall.index)
+								if (existingCall) {
+									// 说明已经存在
+									// 这个分支需要合并参数
+									if (toolCall.function?.name) {
+										existingCall.function.name = toolCall.function.name
+									}
+									if (toolCall.function?.arguments) {
+										existingCall.function.arguments += toolCall.function.arguments
+									}
+								} else {
+									// 说明是新的工具调用，存储一个新的
+									// 当前的 toolCall = { index: 0, id: 'abc', function: { name: 'getWeather', arguments: '{"city":"北' } }
+									// toolCall = { index: 0, id: 'abc', function: { name: 'getWeather', arguments: '{"city":"京' } }
+									// 工具名是完整的，但是参数并不完整，因为是流式返回的
+									toolCalls.push({
+										index: toolCall.index,
+										id: toolCall.id,
+										type: "function",
+										function: {
+											name: toolCall.function?.name,
+											arguments: toolCall.function?.arguments
+										}
+									})
+								}
+							}
+						}
 					}
 				} catch (error) {
 					console.error("解析SSE数据出错:", error.message, "原始数据:", dataContent)
@@ -92,10 +120,15 @@ async function callLLM({ messages, stream = false, callback }) {
 		}
 	}
 
+	// 如果需要调用工具，返回一个对象{content, tool_calls}
+	// 其中 tool_calls记录了要调用哪些工具
+	if (toolCalls.length > 0) {
+		return { content: fullResponse, tool_calls: toolCalls }
+	}
+
 	return fullResponse
 }
 
 module.exports = {
-	callLLM: (messages) => callLLM({ messages }),
-	callLLMStream: (messages, callback) => callLLM({ messages, stream: true, callback })
+	callLLM
 }

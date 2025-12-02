@@ -1,20 +1,14 @@
 const express = require("express")
 const router = express.Router()
-const { getWeather } = require("../utils/weatherHandler")
-const { translate } = require("../utils/translateHandler")
-const { buildAnswerPrompt, buildFunctionCallPrompt } = require("../utils/promptTemplates")
-const { callLLM, callLLMStream } = require("../utils/LLM")
-
+const { callLLM } = require("../utils/LLM")
+const { getWeather } = require("../utils/weatherHandler.js")
+const { translate } = require("../utils/translateHandler.js")
+const toolList = require("../utils/tools")
 // 要支持上下文，背后的原理非常简单：
 // 拿一个数组来存储会话的历史记录，之后每一次会将历史会话记录一同发给大模型
 const conversations = [] // 该数组存储会话记录
-/**
- * conversations = [
- *  {role: "user", content: "你是谁"},
- *  {role: "assistant", content: "大模型的回复"},
- * ]
- */
-const toolMap = {
+// 工具函数映射表
+const toolsMap = {
 	getWeather,
 	translate
 }
@@ -28,81 +22,85 @@ router.post("/ask", async (req, res) => {
 	res.setHeader("Cache-Control", "no-cache")
 
 	// 首先需要大模型来判断是否需要调用工具
-	const functionCallPrompt = buildFunctionCallPrompt(question)
 
-	const conversationsList = [...conversations, { role: "user", content: functionCallPrompt }]
+	const messages = [...conversations, { role: "user", content: question }]
 
-	const functionCallResult = await callLLM(conversationsList)
-
-	// functionCallResult 会有两种情况
-	// 1. 无函数调用
-	// 2. [{"function": "translate", "args": { "input": "我今天很开心" }}]
-
-	let finalResponse = "" // 存储最终的回复，因为每一次回复需要更新到历史会话里面
-
-	if (functionCallResult.trim() === "无函数调用") {
-		const prompt = [...conversations, { role: "user", content: question }]
-
-		finalResponse = await callLLMStream(prompt, (chunk) => {
+	try {
+		const response = await callLLM(messages, toolList, (chunk) => {
 			res.write(`${JSON.stringify({ response: chunk })}\n`)
 		})
-	} else {
-		// 进入此分支，说明需要调用工具
-		try {
-			const toolCalls = JSON.parse(functionCallResult) // [{"function": "translate", "args": { "input": "我今天很开心" }}]
-
-			const toolsResult = [] // 存储工具调用的结果
-			for (const tool of toolCalls) {
-				const { function: functionName, args } = tool
-				if (toolsMap[functionName]) {
-					// 如果有这个工具，那就调用
-					try {
-						const result = await toolsMap[functionName](args) // 调用工具
-						toolsResult.push({
-							function: functionName,
-							args,
-							result
+		if (response.tool_calls) {
+			// 进入此分支，说明要调用工具
+			const toolResults = [] // 存储工具调用的结果
+			for (const toolCall of response.tool_calls) {
+				try {
+					// 挨着挨着去调用每一个工具
+					const functionName = toolCall.function.name
+					const args = JSON.parse(toolCall.function.arguments)
+					if (toolsMap[functionName]) {
+						const result = await toolsMap[functionName](args)
+						toolResults.push({
+							tool_call_id: toolCall.id,
+							role: "tool",
+							content: result
 						})
-					} catch (err) {
-						console.error(`${functionName}工具调用失败☹️`, err)
-						toolsResult.push({
-							function: functionName,
-							args,
-							result: `工具调用失败☹️：${err.message}`
+					} else {
+						// 说明 toolMaps 不存在当前要调用的工具
+						toolResults.push({
+							tool_call_id: toolCall.id,
+							role: "tool",
+							content: `未知工具${functionName}`
 						})
 					}
-				} else {
-					// 进入此分支，说明不存在这个工具
-					console.error(`${functionName}工具不存在`)
-					toolsResult.push({
-						function: functionName,
-						args,
-						result: `未知工具☹️`
+				} catch (err) {
+					console.error("工具调用失败☹️", err)
+					toolResults.push({
+						tool_call_id: toolCall.id,
+						role: "tool",
+						content: `工具调用失败☹️${err.message}`
 					})
 				}
 			}
 
-			// 出了上面的 for 循环后，toolsResult 里面就存储了调用工具的结果
-			// 接下来还是需要构建一个提示词
-			const answerPrompt = buildAnswerPrompt(question, toolsResult)
+			// 代码来到这里，说明工具调用的环节结束了
+			messages.push(
+				{
+					role: "assistant",
+					content: response.content,
+					tool_calls: response.tool_calls
+				},
+				...toolResults // 加入了工具调用的结果
+			)
 
-			const prompt = [...conversations, { role: "user", content: answerPrompt }]
-
-			finalResponse = await callLLMStream(prompt, (chunk) => {
+			const finalResponse = await callLLM(messages, toolList, (chunk) => {
 				res.write(`${JSON.stringify({ response: chunk })}\n`)
 			})
-		} catch (err) {
-			console.error(`解析工具的JSON失败☹️：${err}`)
+
+			conversations.push(
+				{ role: "user", content: question }, // 原始的问题
+				// 大模型判断需要调用工具的回复
+				{
+					role: "assistant",
+					content: response.content,
+					tool_calls: response.tool_calls
+				},
+				// 工具调用的结果
+				// 之所以要将工具调用的结果也放入到会话历史里面，是为了之后大模型能够看到之前调用工具的历史
+				...toolResults,
+				{ role: "assistant", content: finalResponse }
+			)
+		} else {
+			// 不需要调用工具
+			// 直接记录这一次的会话
+			conversations.push(
+				{ role: "user", content: question },
+				{ role: "assistant", content: response }
+			)
 		}
+		if (conversations.length > 20) conversations.splice(0, conversations.length - 20)
+	} catch (error) {
+		console.error("LLM调用失败☹️", error)
 	}
-
-	// 将这一次的答案记录到历史会话里面
-	conversations.push(
-		{ role: "user", content: question },
-		{ role: "assistant", content: finalResponse }
-	)
-
-	if (conversations.length > 20) conversations.splice(0, conversations.length - 20)
 
 	res.end()
 })

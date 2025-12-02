@@ -405,6 +405,14 @@ function App() {
 					>
 						简单解释
 					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setInput("杭州今天的天气怎么样")}
+						disabled={isLoading}
+					>
+						杭州今天天气
+					</Button>
 				</div>
 			</div>
 
