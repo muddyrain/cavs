@@ -1,15 +1,17 @@
-const generateWeatherJWT = require("./weatherJwt")
+import { generateWeatherJWT } from "./weatherJwt.js"
 
 // 提供天气服务的，同样是直接对接第三方服务平台
-const HEFENG_API_KEY = process.env.HEFENG_API_KEY
-const apiHost = process.env.HEFENG_API_HOST
+const HEFENG_API_KEY = "fc5bb8b5711d40dcb8f374bfd12af6d6"
+const HEFENG_VOUCHER_ID = "CM58GDTUVY"
+const HEFENG_PROJECT_ID = "442J3RE5F6"
+const HEFENG_API_HOST = "m55n8mdfb9.re.qweatherapi.com"
 
 /**
  * 格式化天气
  * @param {*} text "今天"、"明天"...
  * @requires YYYY-MM-DD
  */
-function formatDate(text) {
+export function formatDate(text) {
 	const today = new Date()
 
 	if (text.includes("今天")) return today.toISOString().split("T")[0] // 2025-07-16
@@ -40,9 +42,9 @@ function formatDate(text) {
  * @param {*} city 城市的名称
  * @returns 城市的位置
  */
-async function getCityLocation(city) {
-	const jwt = await generateWeatherJWT(process.env.HEFENG_VOUCHER_ID, process.env.HEFENG_PROJECT_ID)
-	const url = `https://${apiHost}/geo/v2/city/lookup?location=${encodeURIComponent(
+export async function getCityLocation(city) {
+	const jwt = await generateWeatherJWT(HEFENG_VOUCHER_ID, HEFENG_PROJECT_ID)
+	const url = `https://${HEFENG_API_HOST}/geo/v2/city/lookup?location=${encodeURIComponent(
 		city
 	)}&key=${HEFENG_API_KEY}`
 	const res = await fetch(url, {
@@ -64,7 +66,7 @@ async function getCityLocation(city) {
  * @param {*} city 城市
  * @param {*} date 日期
  */
-async function getWeather({ city, date }) {
+export async function getWeather({ city, date }) {
 	// 参考第三方服务商文档
 	const formattedDate = formatDate(date)
 	if (!formattedDate) {
@@ -80,7 +82,7 @@ async function getWeather({ city, date }) {
 	}
 
 	try {
-		const url = `https://${apiHost}/v7/weather/3d?location=${locationId}&key=${HEFENG_API_KEY}`
+		const url = `https://${HEFENG_API_HOST}/v7/weather/3d?location=${locationId}&key=${HEFENG_API_KEY}`
 		const res = await fetch(url)
 		const data = await res.json() // 拿到的是一周的天气
 
@@ -100,8 +102,4 @@ async function getWeather({ city, date }) {
 		console.error("天气查询异常:", error)
 		return "天气查询服务暂时不可用"
 	}
-}
-
-module.exports = {
-	getWeather
 }
