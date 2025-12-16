@@ -22,128 +22,167 @@ import {
 	readCodeFile
 } from "./utils/index.js"
 
-// const server = new McpServer({
-// 	name: "wether-mcp-server",
-// 	version: "1.0.0",
-// 	description: "一个MCP服务器"
-// })
+const server = new McpServer({
+	name: "mcp-server",
+	version: "1.0.0",
+	description: "一个MCP服务器"
+})
 
-// server.registerResource(...bannerPhoneResource)
-// server.registerResource(...bookResource)
-
-// // 注册工具（每个工具独立维护在各自文件）
-// server.registerTool(...sumTool)
-// server.registerTool(...createFileTool)
-// server.registerTool(...getWetherTool)
-
-const server = new Server(
+server.registerPrompt(
+	"总结代码",
 	{
-		name: "resources-server",
-		version: "0.1.0",
-		description: "提供资源的MCP服务器"
+		description: "生成代码总结的prompt模板",
+		arguments: [
+			{
+				name: "code",
+				description: "需要总结的代码",
+				required: false
+			},
+			{
+				name: "language",
+				description: "代码对应的编程语言",
+				required: false
+			}
+		]
 	},
-	{
-		capabilities: {
-			resources: {}
+	async (request) => {
+		const args = request.arguments || {} // 拿到对应的参数
+		const { code, language } = args
+
+		// 因为 inspector 调试工具不支持传参，这里我们给一个默认值
+		const codeContent =
+			code ||
+			`
+    function calculateTotal(items) {
+      let total = 0;
+      for (const item of items) {
+        total += item.price * item.quantity;
+      }
+      return total;
+    `
+
+		const codeLanguage = language || "javascript"
+
+		return {
+			messages: [
+				{
+					role: "user",
+					content: {
+						type: "text",
+						text: `
+              请帮我总结以下${codeLanguage}代码的功能和主要逻辑：
+                \`\`\`${codeLanguage.toLowerCase()}
+                ${codeContent}
+                \`\`\`
+
+                请用中文回答，包括：
+                1. 代码的主要功能
+                2. 关键的逻辑流程  
+                3. 使用的主要技术或库
+                4. 可能的改进建议
+
+                ${!code ? "\n*注意：由于未提供代码参数，这里使用了示例代码进行演示。*" : ""}
+            `
+					}
+				}
+			]
 		}
 	}
 )
 
-// 罗列资源列表
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-	// 每次罗列资源的时候，都需要读取一下 assets 目录，看一下有哪些资源
-	// 而不能写死，因为资源目录里面的资源有可能增加或者删除
-
-	const watchDir = getWatchDir()
-	const resources = [] // 存储最终所有的资源
-
-	try {
-		// 读取目录
-		const files = fs.readdirSync(watchDir) // ["1.txt", "2.txt", ....]
-		// 组装资源对象
-		for (const file of files) {
-			const filePath = path.join(watchDir, file)
-			const stat = fs.statSync(filePath) // 该方法是查看一个资源的状态
-
-			if (stat.isFile()) {
-				// 如果进入此分支，说明当前的这个资源是一个文件资源
-				resources.push({
-					uri: `file://${filePath}`,
-					name: file,
-					mimeType: getMimeType(file),
-					desciption: `文件: ${file}`
-				})
+server.registerPrompt(
+	"生成测试的提示词模板", // 第一个参数：提示词模板的名称
+	{
+		// 第二个参数：配置对象
+		description: "为指定函数生成测试用例的prompt模板",
+		arguments: [
+			{
+				name: "function_name",
+				description: "要测试的函数名称",
+				required: false
+			},
+			{
+				name: "function_code",
+				description: "函数的完整代码",
+				required: false
+			},
+			{
+				name: "test_framework",
+				description: "使用的测试框架 (例如: Jest, Mocha, Vitest)",
+				required: false
 			}
-		}
-	} catch (err) {
-		console.error(`读取资源目录时出错: ${err.message}`)
-	}
+		]
+	},
+	async (request) => {
+		// 第三个参数：处理函数
+		const args = request.arguments || {}
+		const { function_name, function_code, test_framework } = args
 
-	return {
-		resources
-	}
-})
-
-// 读取具体的资源
-server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-	const { uri } = request.params
-	console.error("uri>>>", uri) // 例如：file:///Users/jie/Desktop/demo/src/assets/1.txt
-
-	const filePath = uri.replace("file://", "") // -> /Users/jie/Desktop/demo/src/assets/1.txt
-
-	try {
-		const content = fs.readFileSync(filePath, "utf8")
-		const filename = path.basename(filePath)
+		// 提供默认值
+		const functionName = function_name || "calculateTotal"
+		const functionCode =
+			function_code ||
+			`function calculateTotal(items) {
+  if (!Array.isArray(items)) {
+    throw new Error('参数必须是数组');
+  }
+  
+  let total = 0;
+  for (const item of items) {
+    if (!item.price || !item.quantity) {
+      throw new Error('每个商品必须有价格和数量');
+    }
+    total += item.price * item.quantity;
+  }
+  return total;
+}`
+		const testFramework = test_framework || "Jest"
 
 		return {
-			contents: [
+			messages: [
 				{
-					uri,
-					mimeType: getMimeType(filename),
-					text: content
+					role: "user",
+					content: {
+						type: "text",
+						text: `请为以下函数生成${testFramework}测试用例：
+
+函数名：${functionName}
+
+函数代码：
+\`\`\`javascript
+${functionCode}
+\`\`\`
+
+请生成包括以下场景的测试用例：
+1. 正常情况的测试
+2. 边界情况的测试
+3. 错误情况的测试
+4. 输入验证的测试
+
+请用中文注释说明每个测试用例的目的。
+
+${
+	!function_name && !function_code
+		? "\n*注意：由于未提供函数参数，这里使用了示例函数进行演示。*"
+		: ""
+}`
+					}
 				}
 			]
 		}
-	} catch (err) {
-		console.error(`读取文件失败: ${err.message}`)
 	}
-})
+)
 
-// 向客户端发送通知
-function sendNotification() {
-	server.notification({
-		method: "notifications/resources/list_changed",
-		params: {}
-	})
-}
+server.registerResource(...bannerPhoneResource)
+server.registerResource(...bookResource)
 
-// 初始化一个监听器
-function initWatcher() {
-	// 获取监听的目录
-	const watchDir = getWatchDir()
-
-	// 创建一个监听器
-	const watcher = chokidar.watch(watchDir, {
-		ignored: /(^|[/\\])\../, // 忽略隐藏文件
-		persistent: true, // 持久监听
-		ignoreInitial: true // 忽略初始扫描，在启动监听器的时候，第一次添加监听文件不会触发 add 一类的事件
-	})
-
-	watcher
-		.on("add", () => {
-			// 向客户端发送通知
-			sendNotification()
-		})
-		.on("unlink", () => {
-			// 向客户端发送通知
-			sendNotification()
-		})
-}
+// 注册工具（每个工具独立维护在各自文件）
+server.registerTool(...sumTool)
+server.registerTool(...createFileTool)
+server.registerTool(...getWetherTool)
 
 // 创建一个 stdio 传输层
 const transport = new StdioServerTransport()
 
 // 连接 transport
 server.connect(transport)
-
-initWatcher()
