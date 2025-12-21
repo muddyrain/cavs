@@ -1,34 +1,33 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
+import { z } from "zod"
 
-// 工厂函数：创建 MCP Server
-export const createMCPServer = () => {
-  const server = new McpServer({
-    name: "http-mcp-server",
-    version: "0.1.0",
-  });
+const server = new McpServer({
+	name: "weather-server",
+	version: "1.0.0"
+})
 
-  server.registerTool(
-    "两数之和",
-    {
-      title: "数字加法计算器",
-      description: "计算两个数字的和",
-      inputSchema: {
-        num1: z.number().describe("第一个数字"),
-        num2: z.number().describe("第二个数字"),
-      },
-    },
-    async ({ num1, num2 }) => {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `计算结果: ${num1} + ${num2} = ${num1 + num2}!!!`,
-          },
-        ],
-      };
-    }
-  );
+server.registerTool(
+	"get_weather",
+	{
+		title: "天气查询工具",
+		description: "根据城市名称查询当前天气",
+		inputSchema: {
+			location: z.string().describe("城市名称，例如 Hangzhou")
+		}
+	},
+	async ({ location }) => {
+		console.error("调用了MCP Server 上的 get_weather 工具")
+		return {
+			content: [
+				{
+					type: "text",
+					text: `📍 ${location} 天气晴，气温 26℃ ~ 32℃`
+				}
+			]
+		}
+	}
+)
 
-  return server;
-};
+const transport = new StdioServerTransport()
+server.connect(transport)

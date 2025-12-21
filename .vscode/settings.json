@@ -14,5 +14,5 @@
 	"[json]": {
 		"editor.defaultFormatter": "vscode.json-language-features"
 	},
-	"cSpell.words": ["modelcontextprotocol"]
+	"cSpell.words": ["cavs", "Deepseek", "modelcontextprotocol"]
 }
