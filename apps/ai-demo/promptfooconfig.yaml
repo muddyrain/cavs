@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+# Learn more about building a configuration: https://promptfoo.dev/docs/configuration/guide
+
+description: "My eval"
+
+prompts:
+  - id: good-job-title
+    label: "好提示词：具体要求 + 输出格式"
+    raw: |
+      请根据以下岗位信息，撰写一句吸引人的招聘广告标题：
+      - 以年轻人喜欢的口吻
+      - 控制在15个字以内
+      - 用一句话概括岗位亮点
+      岗位信息：
+      {{input}}
+
+  - id: bad-job-title
+    label: "坏提示词：无要求，模糊指令"
+    raw: |
+      写一句话。
+
+providers:
+  - id: ollama:llama3
+  - id: ollama:deepseek-r1
+  
+
+tests:
+  - vars:
+      input: "我们是一家AI初创公司，正在招聘前端开发，技术栈为Vue和TypeScript，提供远程办公和股票期权。"
+  - vars:
+      input: "本公司招聘客服专员，工作环境轻松，带薪培训，有下午茶。"
+  - vars:
+      input: "招聘Python数据工程师，参与大模型推理平台建设，年薪40万起。"
