@@ -1,4 +1,4 @@
-import { importPKCS8, SignJWT } from "jose"
+const { importPKCS8, SignJWT } = require("jose")
 
 const YourPrivateKey = `-----BEGIN PRIVATE KEY-----
 MC4CAQAwBQYDK2VwBCIEIG9JkvfW9h4j1o2O6R/6MjtUeurgVcJuduuTnRJt7aTQ
@@ -10,7 +10,7 @@ MC4CAQAwBQYDK2VwBCIEIG9JkvfW9h4j1o2O6R/6MjtUeurgVcJuduuTnRJt7aTQ
  * @param {string} projectId - 你的项目ID
  * @returns {Promise<string>} JWT令牌
  */
-export async function generateWeatherJWT(keyId, projectId) {
+async function generateWeatherJWT(keyId, projectId) {
 	try {
 		const privateKey = await importPKCS8(YourPrivateKey, "EdDSA")
 
@@ -34,4 +34,8 @@ export async function generateWeatherJWT(keyId, projectId) {
 	} catch (error) {
 		throw new Error(`生成JWT失败: ${error.message}`)
 	}
+}
+
+module.exports = {
+	generateWeatherJWT
 }

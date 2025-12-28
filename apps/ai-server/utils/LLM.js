@@ -129,6 +129,21 @@ async function callLLM(messages, tools = null, callback) {
 	return fullResponse
 }
 
+async function getEmbedding(text) {
+	// 调用本地的 nomic-embed-text 模型来做转换
+	const res = await fetch("http://localhost:11434/api/embeddings", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			model: "nomic-embed-text",
+			prompt: text
+		})
+	})
+	const result = await res.json()
+	return result.embedding
+}
+
 module.exports = {
-	callLLM
+	callLLM,
+	getEmbedding
 }

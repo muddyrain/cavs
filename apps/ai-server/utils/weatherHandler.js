@@ -1,4 +1,4 @@
-import { generateWeatherJWT } from "./weatherJwt.js"
+const { generateWeatherJWT } = require("./weatherJwt.js")
 
 // 提供天气服务的，同样是直接对接第三方服务平台
 const HEFENG_API_KEY = "fc5bb8b5711d40dcb8f374bfd12af6d6"
@@ -11,7 +11,7 @@ const HEFENG_API_HOST = "m55n8mdfb9.re.qweatherapi.com"
  * @param {*} text "今天"、"明天"...
  * @requires YYYY-MM-DD
  */
-export function formatDate(text) {
+function formatDate(text) {
 	const today = new Date()
 
 	if (text.includes("今天")) return today.toISOString().split("T")[0] // 2025-07-16
@@ -42,7 +42,7 @@ export function formatDate(text) {
  * @param {*} city 城市的名称
  * @returns 城市的位置
  */
-export async function getCityLocation(city) {
+async function getCityLocation(city) {
 	const jwt = await generateWeatherJWT(HEFENG_VOUCHER_ID, HEFENG_PROJECT_ID)
 	const url = `https://${HEFENG_API_HOST}/geo/v2/city/lookup?location=${encodeURIComponent(
 		city
@@ -66,7 +66,7 @@ export async function getCityLocation(city) {
  * @param {*} city 城市
  * @param {*} date 日期
  */
-export async function getWeather({ city, date }) {
+async function getWeather({ city, date }) {
 	// 参考第三方服务商文档
 	const formattedDate = formatDate(date)
 	if (!formattedDate) {
@@ -102,4 +102,8 @@ export async function getWeather({ city, date }) {
 		console.error("天气查询异常:", error)
 		return "天气查询服务暂时不可用"
 	}
+}
+
+module.exports = {
+	getWeather
 }
