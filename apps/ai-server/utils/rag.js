@@ -52,4 +52,44 @@ async function loadCachedEmbeddings() {
 		return await generateEmbeddings()
 	}
 }
-loadCachedEmbeddings()
+
+/**
+ * 余弦相似度计算
+ * @param {*} vecA
+ * @param {*} vecB
+ * @returns
+ */
+function cosineSimilarity(vecA, vecB) {
+	const dot = vecA.reduce((sum, val, i) => sum + val * vecB[i], 0)
+	const normA = Math.sqrt(vecA.reduce((sum, val) => sum + val * val, 0))
+	const normB = Math.sqrt(vecB.reduce((sum, val) => sum + val * val, 0))
+	return dot / (normA * normB)
+}
+
+/**
+ *
+ * @param {*} query 用户的问题
+ * @param {*} embeddedDocs 外挂的语料库（已经转为了向量的形式）
+ * @param {*} topK 返回匹配结果的前 K 条结果
+ */
+async function searchByEmbedding(query, embeddedDocs, topK = 3) {
+	// 1. 将用户的问题也转为向量的形式
+	const queryEmbedding = await getEmbedding(query)
+
+	// 2. 需要去向量数据库进行一个查找
+	const scored = embeddedDocs.map((chunk) => {
+		const score = cosineSimilarity(queryEmbedding, chunk.embedding)
+		return {
+			...chunk,
+			score
+		}
+	})
+
+	// 3. 返回对应的前 K 项
+	return scored.sort((a, b) => b.score - a.score).slice(0, topK)
+}
+
+module.exports = {
+	loadCachedEmbeddings,
+	searchByEmbedding
+}
