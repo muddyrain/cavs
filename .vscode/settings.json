@@ -14,5 +14,13 @@
 	"[json]": {
 		"editor.defaultFormatter": "vscode.json-language-features"
 	},
-	"cSpell.words": ["cavs", "Deepseek", "modelcontextprotocol", "promptfoo", "promptfooconfig"]
+	"cSpell.words": [
+		"cavs",
+		"Deepseek",
+		"langchain",
+		"modelcontextprotocol",
+		"ollama",
+		"promptfoo",
+		"promptfooconfig"
+	]
 }
