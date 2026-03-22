@@ -19,6 +19,7 @@
 		"Deepseek",
 		"langchain",
 		"modelcontextprotocol",
+		"nomic",
 		"ollama",
 		"promptfoo",
 		"promptfooconfig"

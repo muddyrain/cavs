@@ -314,6 +314,9 @@ importers:
       '@langchain/ollama':
         specifier: ^1.2.6
         version: 1.2.6(@langchain/core@1.1.32(openai@5.23.2(ws@8.18.3)(zod@3.25.76))(ws@8.18.3))
+      cosine-similarity:
+        specifier: ^1.0.1
+        version: 1.0.1
 
   configs/ts-config: {}
 
@@ -3496,6 +3499,9 @@ packages:
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+
+  cosine-similarity@1.0.1:
+    resolution: {integrity: sha512-qLkCCpVR/v026TtNsnbkLGzlDAoklAKlhJCQwlyDdqbFanSWflzbNzH/Uwe3T/ezAzRk4V2+Ngfqcog1aZ2q/A==}
 
   cosmiconfig-typescript-loader@6.1.0:
     resolution: {integrity: sha512-tJ1w35ZRUiM5FeTzT7DtYWAFFv37ZLqSRkGi2oeCK1gPhvaWjkAtfXvLmvE1pRfxxp9aQo6ba/Pvg1dKj05D4g==}
@@ -9300,6 +9306,8 @@ snapshots:
       is-what: 3.14.1
 
   core-util-is@1.0.3: {}
+
+  cosine-similarity@1.0.1: {}
 
   cosmiconfig-typescript-loader@6.1.0(@types/node@24.1.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
