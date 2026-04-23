@@ -1,16 +1,20 @@
+import { AIMessage, HumanMessage } from "@langchain/core/messages"
 import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate, 
-  SystemMessagePromptTemplate,
-} from "@langchain/core/prompts";
+	ChatPromptTemplate,
+	HumanMessagePromptTemplate,
+	MessagesPlaceholder,
+	SystemMessagePromptTemplate
+} from "@langchain/core/prompts"
 
-// 定义一个聊天 prompt 模版
-const chatPrompt = ChatPromptTemplate.fromMessages([
-  SystemMessagePromptTemplate.fromTemplate("你是一个乐于助人的助手"),
-  HumanMessagePromptTemplate.fromTemplate("请把以下句子翻译成英文：{text}"),
-]);
+const pt = ChatPromptTemplate.fromMessages([
+	SystemMessagePromptTemplate.fromTemplate("你是一个乐于助人的助手"),
+	new MessagesPlaceholder("history"),
+	HumanMessagePromptTemplate.fromTemplate("用户的问题是：{question}")
+])
 
-// 渲染成消息数组
-const messages = await chatPrompt.formatMessages({ text: "你好" });
+const res = await pt.invoke({
+	question: "你好",
+	history: [new HumanMessage("今天天气怎么样？"), new AIMessage("今天天气非常晴朗")]
+})
 
-console.log(messages);
+console.log(res)
