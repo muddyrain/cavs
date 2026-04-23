@@ -1,11 +1,16 @@
-import { HumanMessage } from "@langchain/core/messages"
-import { ChatOllama } from "@langchain/ollama"
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate, 
+  SystemMessagePromptTemplate,
+} from "@langchain/core/prompts";
 
-const chatModel = new ChatOllama({
-	model: "llama3",
-	temperature: 0.7
-})
+// 定义一个聊天 prompt 模版
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  SystemMessagePromptTemplate.fromTemplate("你是一个乐于助人的助手"),
+  HumanMessagePromptTemplate.fromTemplate("请把以下句子翻译成英文：{text}"),
+]);
 
-const response = await chatModel.invoke([new HumanMessage("用中文给我讲一个笑话")])
+// 渲染成消息数组
+const messages = await chatPrompt.formatMessages({ text: "你好" });
 
-console.log(response)
+console.log(messages);

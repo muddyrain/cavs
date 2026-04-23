@@ -23,5 +23,8 @@
 		"ollama",
 		"promptfoo",
 		"promptfooconfig"
-	]
+	],
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
 }
