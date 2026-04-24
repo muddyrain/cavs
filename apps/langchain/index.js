@@ -1,20 +1,21 @@
-import { AIMessage, HumanMessage } from "@langchain/core/messages"
-import {
-	ChatPromptTemplate,
-	HumanMessagePromptTemplate,
-	MessagesPlaceholder,
-	SystemMessagePromptTemplate
-} from "@langchain/core/prompts"
+import { runWithConcurrency } from "./concurrency.js"
+import { MAX_CONCURRENCY, TIMEOUT_MS, TOPICS } from "./config.js"
+import { steamExplain } from "./steamExplain.js"
 
-const pt = ChatPromptTemplate.fromMessages([
-	SystemMessagePromptTemplate.fromTemplate("你是一个乐于助人的助手"),
-	new MessagesPlaceholder("history"),
-	HumanMessagePromptTemplate.fromTemplate("用户的问题是：{question}")
-])
+async function main() {
+	await runWithConcurrency(
+		TOPICS,
+		async (topic, idx) => {
+			const label = `Topic ${idx + 1}: ${TOPICS.length}`
+			// 该方法时执行单个任务
+			try {
+				await steamExplain(topic, label, TIMEOUT_MS)
+			} catch (error) {
+				console.log(`\n[${label}] 失败：${topic}，错误信息：${error.message}`)
+			}
+		},
+		MAX_CONCURRENCY
+	)
+}
 
-const res = await pt.invoke({
-	question: "你好",
-	history: [new HumanMessage("今天天气怎么样？"), new AIMessage("今天天气非常晴朗")]
-})
-
-console.log(res)
+main()
