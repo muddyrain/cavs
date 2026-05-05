@@ -1,35 +1,23 @@
-// import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio"
+import { TextLoader } from "@langchain/classic/document_loaders/fs/text"
+import { RecursiveCharacterTextSplitter } from "@langchain/classic/text_splitter"
+import { NomicEmbeddings } from "./utils/embed.js"
 
-// const loader = new CheerioWebBaseLoader("https://tech.meituan.com/", {
-// 	selector: "h2" // 只提取网页中的 <h2> 元素
-// })
+const loader = new TextLoader("data/kong.txt")
 
-// const result = await loader.load()
+const docs = await loader.load()
 
-// console.log(result)
-
-import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio"
-import { SerpAPILoader } from "@langchain/community/document_loaders/web/serpapi"
-
-const apiKey = "552686f6fd4a757b971f4caf26c5b519a47b482502ce5d3e37acfe45cd5fccf2"
-
-const q = "什么是Copilot？"
-
-const loader = new SerpAPILoader({
-	q,
-	apiKey
+const splitter = new RecursiveCharacterTextSplitter({
+	chunkSize: 64,
+	chunkOverlap: 0
 })
 
-const result = await loader.load()
+const splittedDocs = await splitter.splitDocuments(docs)
 
-const jsonResult = JSON.parse(result[1].pageContent)
+const texts = splittedDocs.map(doc => doc.pageContent)
 
-const link = jsonResult.link
+const embeddings = new NomicEmbeddings(5)
 
-// console.log(link)
 
-const webLoader = new CheerioWebBaseLoader(link)
+const result = await embeddings.embedDocuments(texts)
 
-const webContent = await webLoader.load()
-
-console.log(webContent)
+console.log(result);
