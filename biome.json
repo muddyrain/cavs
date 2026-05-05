@@ -28,6 +28,7 @@
 			"packages/**/src/**/*",
 			"packages/*/src/**/*",
 			"apps/*/src/**/*",
+			"apps/langchain/**/*.js",
 			"!**/dist/**",
 			"!**/node_modules/**"
 		],
