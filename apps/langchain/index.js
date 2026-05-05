@@ -1,23 +1,37 @@
-import { TextLoader } from "@langchain/classic/document_loaders/fs/text"
-import { RecursiveCharacterTextSplitter } from "@langchain/classic/text_splitter"
-import { NomicEmbeddings } from "./utils/embed.js"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
+import { NomicEmbeddings } from "./utils/embed.js";
+import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
+import { RecursiveCharacterTextSplitter } from "@langchain/classic/text_splitter";
 
-const loader = new TextLoader("data/kong.txt")
+const loader = new TextLoader("data/kong.txt");
 
-const docs = await loader.load()
+const docs = await loader.load();
 
 const splitter = new RecursiveCharacterTextSplitter({
 	chunkSize: 64,
-	chunkOverlap: 0
-})
+	chunkOverlap: 0,
+});
 
-const splittedDocs = await splitter.splitDocuments(docs)
+const splittedDocs = await splitter.splitDocuments(docs);
 
-const texts = splittedDocs.map(doc => doc.pageContent)
+const embeddings = new NomicEmbeddings(4);
 
-const embeddings = new NomicEmbeddings(5)
+const store = new MemoryVectorStore(embeddings);
+
+await store.addDocuments(splittedDocs);
 
 
-const result = await embeddings.embedDocuments(texts)
+// 创建一个检索器，现在仓库已经有值了
+const retriever = store.asRetriever({
+	k: 2,
+	searchType: "mmr",
+	searchKwargs: { fetchK: 20, lambda: 0.5 },
+	filter: (doc) => doc.metadata?.source?.endsWith("data/kong.txt"),
+	tags: ["demo", "kong"],
+	metadata: { lesson: "RAG-intro" },
+	// verbose: true,
+});
 
-console.log(result);
+const res = await retriever.invoke("茴香豆是做什么用的");
+
+console.log(res);
