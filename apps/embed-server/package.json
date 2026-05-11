@@ -1,0 +1,21 @@
+{
+  "name": "embed-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@langchain/community": "^0.3.55",
+    "@langchain/core": "^0.3.75",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "langchain": "^0.3.33",
+    "morgan": "~1.9.1",
+    "multer": "^2.0.2",
+    "pdf-parse": "^1.1.1"
+  }
+}
