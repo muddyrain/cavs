@@ -3,6 +3,7 @@ const { PromptTemplate } = require("@langchain/core/prompts");
 const { StringOutputParser } = require("@langchain/core/output_parsers");
 require("dotenv").config();
 
+// 基于用户问的问题是存在相关文档的
 const docPT = PromptTemplate.fromTemplate(`
     你是一名「基于文档回答问题」的智能助手，请严格遵守以下规则：
     
@@ -25,6 +26,7 @@ const docPT = PromptTemplate.fromTemplate(`
     请根据上述规则与结构输出答案。
     `);
 
+// 当前用户问的问题，没有找到相关的文档
 const freePT = PromptTemplate.fromTemplate(`
     你是一名知识型助手。请用简体中文，语言简洁、客观，不超过300字，直接回答用户问题。
     
@@ -33,9 +35,13 @@ const freePT = PromptTemplate.fromTemplate(`
     `);
 
 const model = new ChatOpenAI({
-  model: "gpt-4o-mini",
+  model: "gpt-5.4",
   temperature: 0,
   streaming: true,
+  openAIApiKey: process.env.OPENAI_API_KEY,
+  configuration: {
+    baseURL: "https://api.amux.ai/v1"
+  }
 });
 
 const docChatChain = docPT.pipe(model).pipe(new StringOutputParser());

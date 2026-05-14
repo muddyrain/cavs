@@ -1,64 +1,127 @@
 <script setup>
-import { nextTick, reactive, ref } from "vue"
+import { ref, reactive, nextTick } from "vue";
+const input = ref(""); // 聊天框内容
+const loading = ref(false); // 控制 loading 的显示
 
-const input = ref("") // 聊天框内容
-const loading = ref(false) // 控制 loading 的显示
+const messages = ref([]); // 存储聊天的内容
 
-const messages = ref([]) // 存储聊天的内容
-
-const chatContainer = ref(null)
+const chatContainer = ref(null);
 
 // 滚动方法
 const scrollHeight = async () => {
-	await nextTick()
+  await nextTick();
 
-	chatContainer.value.scrollTo({
-		top: chatContainer.value.scrollHeight,
-		behavior: "smooth"
-	})
-}
+  chatContainer.value.scrollTo({
+    top: chatContainer.value.scrollHeight,
+    behavior: "smooth",
+  });
+};
 
 // 用户聊天
 const sendHandler = async () => {
-	// TODO
-}
+  // 1. 获取到用户输入的内容
+  const query = input.value.trim();
+
+  if (!query) {
+    alert("请输入您的问题");
+    return;
+  }
+
+  // 2. 先将用户的问题放到 messages 数组里面
+  messages.value.push({
+    role: "user",
+    text: query,
+  });
+
+  input.value = "";
+  loading.value = true;
+
+  scrollHeight(); // 滚动到最下面
+
+  // 3. 发送请求
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  const reader = res.body.getReader();
+  if (!reader) {
+    console.error("响应流为空");
+    loading.value = false;
+    return;
+  }
+
+  const decoder = new TextDecoder("utf-8");
+
+  let botMessage = ""; // 用于拼接大模型返回的完整信息
+  const newMessage = reactive({
+    role: "bot",
+    text: "",
+  });
+  messages.value.push(newMessage);
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    // 对于当前读取出来的块儿的数据进行处理
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split("\n").filter((line) => line.trim());
+
+    for (const line of lines) {
+      try {
+        const data = JSON.parse(line); // data = {"response":"你好"}
+        if (data.response) {
+          if (loading.value) loading.value = false; // 一旦有数据返回，先关闭 loading
+          botMessage += data.response; // 每次回来的数据拼接到之前的数据里面
+          newMessage.text = botMessage; // 更新 newMessage
+
+          scrollHeight();
+        }
+      } catch (e) {
+        console.error("JSON解析失败☹️", e);
+      }
+    }
+  }
+};
 
 // 上传状态显示
-const uploadStatus = ref("未上传")
+const uploadStatus = ref("未上传");
 
 // 上传文件
 const onFileChange = async (e) => {
-	const file = e.target.files[0] // 拿到用户上传的文件
-	e.target.value = ""
-	if (!file) return
+  const file = e.target.files[0]; // 拿到用户上传的文件
+  e.target.value = "";
+  if (!file) return;
 
-	// 对上传的文件后缀名做一个防御
-	if (!/\.(pdf|md|txt)$/i.test(file.name)) {
-		uploadStatus.value = "文件类型仅支持 pdf / md / txt"
-		return
-	}
+  // 对上传的文件后缀名做一个防御
+  if (!/\.(pdf|md|txt)$/i.test(file.name)) {
+    uploadStatus.value = "文件类型仅支持 pdf / md / txt";
+    return;
+  }
 
-	// 代码来到这里，说明文件类型是ok的，可以上传
-	uploadStatus.value = `正在上传：${file.name}(${(file.size / 1024 / 1024).toFixed(2)} MB)...`
+  // 代码来到这里，说明文件类型是ok的，可以上传
+  uploadStatus.value = `正在上传：${file.name}(${(file.size / 1024 / 1024).toFixed(2)} MB)...`;
 
-	try {
-		// 进行文件的上传
-		const form = new FormData()
-		form.append("file", file)
+  try {
+    // 进行文件的上传
+    const form = new FormData();
+    form.append("file", file);
 
-		const res = await fetch("/assets/upload", {
-			method: "POST",
-			body: form
-		})
+    const res = await fetch("/assets/upload", {
+      method: "POST",
+      body: form,
+    });
 
-		const data = await res.json()
+    const data = await res.json();
 
-		uploadStatus.value = data.message
-	} catch (err) {
-		console.error(err)
-		uploadStatus.value = "上传失败：" + (err?.message || String(err))
-	}
-}
+    uploadStatus.value = data.message;
+  } catch (err) {
+    console.error(err);
+    uploadStatus.value = "上传失败：" + (err?.message || String(err));
+  }
+};
 </script>
 
 <template>

@@ -37,6 +37,15 @@ router.post("/upload", upload.single("file"), async function (req, res) {
 
 router.post("/query", async function (req, res) {
   // 搜索用户原始的问题
+  const query = req.body.query || "";
+  // 进行检索
+  const retrievalResults = await storeRetrieval(query);
+  console.log("向量库搜索结果>>>", retrievalResults);
+
+  res.json({
+    success: true,
+    data: retrievalResults,
+  });
 });
 
 module.exports = router;

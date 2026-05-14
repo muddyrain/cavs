@@ -5,8 +5,8 @@ class NomicEmbeddings extends Embeddings {
   constructor(concurrency = 3) {
     super();
     // this.model = "nomic-embed-text";
-    this.model = "dengcao/Qwen3-Embedding-8B:Q5_K_M"; // 嵌入模型
-    this.apiUrl = "http://localhost:11434/api/embeddings";
+    this.model = "nomic-embed-text"; // 嵌入模型
+    this.apiUrl = "http://localhost:11434/api/embed";
     this.concurrency = concurrency;
   }
 
@@ -19,11 +19,12 @@ class NomicEmbeddings extends Embeddings {
     const res = await fetch(this.apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: this.model, prompt: text }),
+      body: JSON.stringify({ model: this.model, input: text }),
     });
     if (!res.ok) throw new Error(`嵌入操作失败☹️: ${res.status}`);
     const data = await res.json();
-    return data.embedding;
+    console.log("embedding response>>>", data)
+    return data.embeddings[0];
   }
 
   /**
