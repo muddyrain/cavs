@@ -6,17 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "type": "module",
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.20.0",
   "dependencies": {
-    "@langchain/core": "^1.2.1",
-    "@langchain/langgraph": "^1.4.7",
-    "@langchain/ollama": "^1.2.6",
-    "langchain": "^1.5.2",
+    "@langchain/core": "^1.0.5",
+    "@langchain/langgraph": "^1.0.2",
+    "@langchain/ollama": "^1.0.1",
+    "langchain": "^1.0.5",
     "readline-sync": "^1.4.10",
-    "zod": "^4.4.3"
+    "zod": "^4.1.12"
   }
 }
