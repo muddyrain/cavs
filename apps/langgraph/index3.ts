@@ -1,10 +1,24 @@
 // 节点只需返回“要更新的那一小块”，不用把整份 state 再抄一遍。
 import { END, START, StateGraph } from "@langchain/langgraph"
+import { registry } from "@langchain/langgraph/zod"
 import * as z from "zod"
 
+// registry就是一个全局的 reducer 注册表
+
 const Schema = z.object({
-	count: z.number(),
-	logs: z.array(z.string()),
+	count: z.number().register(registry, {
+		reducer: {
+			fn: (state, action) => state + action
+		},
+		default: () => 0
+	}),
+	logs: z.array(z.string()).register(registry, {
+		reducer: {
+			// 新旧状态拼接到一起，而非覆盖
+			fn: (oldVal, incoming) => oldVal.concat(incoming) // 拼接数组
+		},
+		default: () => [] as string[] // 没有旧值时，用空数组作为初始值
+	}),
 	status: z.string().optional()
 })
 
@@ -32,15 +46,33 @@ async function node3() {
 	}
 }
 
+// 节点4
+async function node4() {
+	return {
+		count: 200
+	}
+}
+
+// 节点5
+async function node5(state: TState) {
+	return {
+		logs: [`第二条log，count=${state.count}`]
+	}
+}
+
 // 构建图
 const app = new StateGraph(Schema)
 	.addNode("node1", node1)
 	.addNode("node2", node2)
 	.addNode("node3", node3)
+	.addNode("node4", node4)
+	.addNode("node5", node5)
 	.addEdge(START, "node1")
 	.addEdge("node1", "node2")
 	.addEdge("node2", "node3")
-	.addEdge("node3", END)
+	.addEdge("node3", "node4")
+	.addEdge("node4", "node5")
+	.addEdge("node5", END)
 	.compile()
 
 const result = await app.invoke({
