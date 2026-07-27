@@ -1,68 +1,70 @@
-import { END, START, StateGraph } from "@langchain/langgraph"
-import { registry } from "@langchain/langgraph/zod"
-import { z } from "zod"
+import "dotenv/config"
+import { AIMessage, type BaseMessageLike, HumanMessage } from "@langchain/core/messages"
+import readlineSync from "readline-sync"
+import graph from "./modules/graph.ts"
 
-// 1. 定义Schema
-const Schema = z.object({
-	a: z.string().optional(),
-	b: z.string().optional(),
-	c: z.string().optional(),
-	t0: z.number().optional(), // 记录时间
-	// 日志的记录
-	logs: z.array(z.string()).register(registry, {
-		reducer: {
-			fn: (oldVal, newVal) => oldVal.concat(newVal)
-		},
-		default: () => [] as string[]
-	})
-})
+const chat_history: BaseMessageLike[] = [] // 存储会话记录
 
-// 简单 sleep，模拟不同耗时
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+// 程序入口
+async function main() {
+	console.log("开始对话，输入内容后回车；clear 清空历史；exit 退出。")
 
-// 统一格式化时间戳（相对 A 节点开始）
-const fmt = (t0?: number) => `${t0 !== undefined ? Date.now() - t0 : 0}ms`
+	while (true) {
+		// 接收用户的输入
+		const input = readlineSync.question("用户：")
 
-const graph = new StateGraph(Schema)
-	.addNode("A", () => {
-		console.log("运行A节点")
-		return {
-			a: "A节点执行后的结果",
-			t0: Date.now(),
-			logs: ["【A节点】开始(+0ms)", "【A节点】结束(+0ms)"]
+		if (!input) continue
+
+		if (input === "exit") break
+
+		if (input === "clear") {
+			chat_history.length = 0
+			console.log("已经清空历史")
+			continue
 		}
-	})
-	.addNode("B", async (state) => {
-		console.log("运行B节点")
-		const start = fmt(state.t0) // 得到一个相对于A节点的时间
-		await sleep(2500)
-		return {
-			b: "b节点执行后的结果",
-			logs: [`【B节点】开始(+${start})`, `【B节点】结束(+${fmt(state.t0)})`]
+
+		// 代码来到这里，就是正常的对话
+		try {
+			// 先将用户这一次的输入加入到会话数组里面
+			const messages = [...chat_history, new HumanMessage(input)]
+
+			// 和模型进行交互，拿到一个事件流
+			const eventStream = await graph.streamEvents({ messages }, { version: "v2" })
+
+			globalThis.process.stdout.write("助理：")
+			let finalText = "" // 存储最终模型输出内容
+
+			// 根据事件流里面的每一个事件类型，做不同的事情
+			for await (const ev of eventStream) {
+				// console.log(ev);
+				// 根据每一个事件不同的类型，做不一样的处理
+				if (ev.event === "on_chat_model_stream") {
+					// 说明就是一个token
+					// 1. 输出    2. 拼接
+					const text = ev.data.chunk.text // 拿到这一次token的文本值
+					finalText += text
+					globalThis.process.stdout.write(text)
+				}
+				if (ev.event === "on_tool_start") {
+					// 说明是要调用工具
+					globalThis.process.stdout.write(`\n【正在调用工具 ${ev.name}】\n`)
+				}
+				if (ev.event === "on_tool_end") {
+					// 说明工具调用结束
+					globalThis.process.stdout.write(`\n【调用工具 ${ev.name} 完成】\n`)
+				}
+			}
+
+			console.log("\n")
+
+			// 代码来到这里，模型所有的token输出都已经完毕了
+			// 将模型的回复写入到会话历史里面
+			chat_history.push(new HumanMessage(input), new AIMessage(finalText))
+		} catch (err) {
+			console.error("和模型会话失败", err)
 		}
-	})
-	.addNode("C", async (state) => {
-		console.log("运行C节点")
-		const start = fmt(state.t0) // 得到一个相对于A节点的时间
-		await sleep(1000)
-		return {
-			c: "c节点执行后的结果",
-			logs: [`【C节点】开始(+${start})`, `【C节点】结束(+${fmt(state.t0)})`]
-		}
-	})
-	.addNode("D", async (state) => {
-		console.log("运行D节点")
-		const summary = `D节点已运行，b=${state.b ?? "none"}，c=${state.c ?? "none"}`
-		return {
-			logs: [`${summary}`, `【D节点】结束(+${fmt(state.t0)})`, `整个流程结束`]
-		}
-	})
-	.addEdge(START, "A")
-	.addEdge("A", "B")
-	.addEdge("A", "C")
-	.addEdge("B", "D")
-	.addEdge("C", "D")
-	.addEdge("D", END)
-	.compile()
-const result = await graph.invoke({})
-console.log(result)
+	}
+
+	console.log("感谢使用，下次见！")
+}
+main()
