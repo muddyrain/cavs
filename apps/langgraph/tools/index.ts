@@ -1,8 +1,9 @@
-import calculator from "./calculator.ts";
-import time from "./time.ts";
-import weather from "./weather.ts";
+import calcTool from "./calcTool.ts";
+import timeTool from "./timeTool.ts";
+import weatherTool from "./weatherTool.ts";
+import search from "./searchTool.ts";
 
-const tools = [calculator, time, weather];
+const tools = [calcTool, timeTool, weatherTool, search];
 
 export type ToolList = typeof tools;
 
