@@ -34,7 +34,7 @@ const func = async ({ query }: searchInput): Promise<string> => {
 		const json = await response.json()
 		if (json.organic_results && json.organic_results.length > 0) {
 			// 说明这一次搜索是有效的
-			return json.organic_results[0].result
+			return json.organic_results[0].snippet
 		}
 		return "没有搜索到相关结果"
 	} catch (err) {

@@ -4,6 +4,7 @@ packages:
   - configs/*
 
 autoInstallPeers: true
+strictPeerDependencies: false
 
 catalog:
   '@types/node': 24.1.0
