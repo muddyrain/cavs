@@ -1,54 +1,42 @@
+// 父图
 import { END, START, StateGraph } from "@langchain/langgraph"
 import { z } from "zod/v4"
-import { riskSubgraph } from "./riskSubgraph.ts"
+import { kycSubgraph } from "./kycSubgraph.ts"
 
 // 父图的状态
-const OrderState = z.object({
-	orderId: z.string().describe("订单的ID"),
-	ip: z.string().describe("下订单的IP"),
-	amount: z.number().describe("订单的金额"),
-	riskLevel: z.enum(["low", "mid", "high"]).optional().describe("风险等级"),
-	finalMessage: z.string().optional().describe("最终生成的消息")
+const MainState = z.object({
+	// 用户注册的基本信息
+	userName: z.string().describe("用户名"),
+	idCardImage: z.string().describe("用户身份证图片"),
+	selfImage: z.string().describe("用户相关的图片"),
+
+	// 各种验证
+	ocrPassed: z.boolean().optional().describe("ocr验证是否通过"),
+	faceMatch: z.boolean().optional().describe("人脸匹配是否通过"),
+	kycPassed: z.boolean().optional().describe("kyc验证是否通过"),
+
+	// 最终注册的结果
+	registerResult: z.string().optional().describe("最终注册的结果")
 })
 
-type TOrderState = z.infer<typeof OrderState>
+type TMainState = z.infer<typeof MainState>
 
-// 该节点用于检验订单是否存在风险
-async function checkRisk(state: TOrderState) {
-	console.log("父图开始检验订单是否存在风险")
-
-	// 直接调用子图
-	const result = await riskSubgraph.invoke({
-		orderId: state.orderId,
-		ip: state.ip,
-		amount: state.amount
-	})
-
-	console.log(`子图返回的结果为：`, result)
-
-	return {
-		riskLevel: result.riskLevel
-	}
-}
-
-// 根据风险的结果生成最终的信息
-async function finish(state: TOrderState) {
-	if (state.riskLevel === "high") {
+function finish(state: TMainState) {
+	if (state.kycPassed) {
 		return {
-			finalMessage: "订单被拒绝：风控风险过高。"
+			registerResult: "注册成功"
 		}
 	}
-
 	return {
-		finalMessage: "订单审核通过，允许下单。"
+		registerResult: "注册失败，KYC验证没有通过"
 	}
 }
 
-export const mainGraph = new StateGraph(OrderState)
-	.addNode("checkRisk", checkRisk)
+export const mainGraph = new StateGraph(MainState)
+	.addNode("kycFlow", kycSubgraph)
 	.addNode("finish", finish)
 	// 边
-	.addEdge(START, "checkRisk")
-	.addEdge("checkRisk", "finish")
+	.addEdge(START, "kycFlow")
+	.addEdge("kycFlow", "finish")
 	.addEdge("finish", END)
 	.compile()
