@@ -1,16 +1,15 @@
-import "dotenv/config"
-import { buildGraph, dumpMarkdown, writeArticle } from "./graph/agent.ts"
+import { mainGraph } from "./mainGraph.ts"
 
-// 入口文件
 async function main() {
-	// 1. 构造agent
-	const agent = buildGraph()
+	const input = {
+		orderId: "A10101",
+		ip: "10.1.10.10",
+		amount: 6000
+	}
 
-	// 2. 写文章：agent、主题
-	const finalState = await writeArticle(agent, "typescript用go语言换芯")
+	const result = await mainGraph.invoke(input)
 
-	// 3. 将文章导出为markdown格式
-	dumpMarkdown(finalState)
+	console.log("\n=====最终结果=======")
+	console.log(result)
 }
-
 main()
