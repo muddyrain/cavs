@@ -3,9 +3,6 @@ packages:
   - packages/*
   - configs/*
 
-autoInstallPeers: true
-strictPeerDependencies: false
-
 catalog:
   '@types/node': 24.1.0
   autoprefixer: 10.4.21
