@@ -1,59 +1,47 @@
-import { END, getWriter, START, StateGraph } from "@langchain/langgraph"
-import { z } from "zod"
+// 演示子图的输出
+import { START, StateGraph } from "@langchain/langgraph"
+import { z } from "zod/v4"
 
-// 状态Schema
-const StateSchema = z.object({
-	result: z.string().optional()
+// 定义子图状态
+const SubState = z.object({
+	foo: z.string(),
+	bar: z.string()
 })
 
-// type State = z.infer<typeof StateSchema>;
+// 构建子图
+const subgraph = new StateGraph(SubState)
+	.addNode("subgraphNode1", () => ({ bar: "bar" })) // 更新bar的值
+	.addNode("subgraphNode2", (state) => ({ foo: state.foo + state.bar })) // 更新foo的值
+	.addEdge(START, "subgraphNode1")
+	.addEdge("subgraphNode1", "subgraphNode2")
+	.compile()
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+// 定义父图的状态
+const ParentState = z.object({
+	foo: z.string(),
+	bar: z.string()
+})
 
-// 任务节点
-async function longTask() {
-	const writer = getWriter()
-	if (!writer) return
-	// 书写自定义的数据
-	writer({ step: 1, message: "正在准备中..." })
-	await sleep(3000)
-
-	writer({ step: 2, message: "正在处理中..." })
-
-	await sleep(3000)
-
-	writer({ step: 3, message: "快要完成了..." })
-
-	await sleep(3000)
-
-	// 更新状态
-	return {
-		result: "任务完成"
-	}
-}
-
-// 构建图
-const graph = new StateGraph(StateSchema)
-	.addNode("longTask", longTask)
-	.addEdge(START, "longTask")
-	.addEdge("longTask", END)
+const graph = new StateGraph(ParentState)
+	.addNode("node1", (state) => ({ foo: "hi! " + state.foo })) // 对foo字段进行更新
+	.addNode("node2", subgraph) // 子图节点
+	.addEdge(START, "node1")
+	.addEdge("node1", "node2")
 	.compile()
 
 async function main() {
-	console.log("===== custom 流式输出 =====\n")
+	const stream = await graph.stream(
+		{ foo: "这是一个测试" },
+		{
+			streamMode: "updates",
+			subgraphs: true
+		}
+	)
 
-	let input = {}
-
-	const stream = await graph.stream(input, {
-		streamMode: "custom"
-	})
 	for await (const item of stream) {
-		console.log("custom自定义流每一次的输出")
+		console.log("updates流输出的每一项")
 		console.log(item)
 		console.log("---------------------")
 	}
-
-	console.log("\n===== 执行结束 =====")
 }
-
 main()
