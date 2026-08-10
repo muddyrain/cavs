@@ -1,47 +1,47 @@
-// 演示子图的输出
-import { START, StateGraph } from "@langchain/langgraph"
+// 快速上手示例
+import { END, MemorySaver, START, StateGraph } from "@langchain/langgraph"
 import { z } from "zod/v4"
 
-// 定义子图状态
-const SubState = z.object({
-	foo: z.string(),
-	bar: z.string()
+// 定义状态结构
+const State = z.object({
+	foo: z.string().optional(),
+	bar: z.string().optional()
 })
 
-// 构建子图
-const subgraph = new StateGraph(SubState)
-	.addNode("subgraphNode1", () => ({ bar: "bar" })) // 更新bar的值
-	.addNode("subgraphNode2", (state) => ({ foo: state.foo + state.bar })) // 更新foo的值
-	.addEdge(START, "subgraphNode1")
-	.addEdge("subgraphNode1", "subgraphNode2")
-	.compile()
+// type TState = z.infer<typeof State>;
 
-// 定义父图的状态
-const ParentState = z.object({
-	foo: z.string(),
-	bar: z.string()
-})
+// 创建checkpointer：checkpoint存储器
+const checkpointer = new MemorySaver()
 
-const graph = new StateGraph(ParentState)
-	.addNode("node1", (state) => ({ foo: "hi! " + state.foo })) // 对foo字段进行更新
-	.addNode("node2", subgraph) // 子图节点
-	.addEdge(START, "node1")
-	.addEdge("node1", "node2")
-	.compile()
+// 构建图
+const graph = new StateGraph(State)
+	.addNode("nodeA", () => {
+		console.log("正在执行节点A")
+		return { foo: "foo" }
+	})
+	.addNode("nodeB", () => {
+		console.log("正在执行节点B")
+		return { bar: "bar" }
+	})
+	.addEdge(START, "nodeA")
+	.addEdge("nodeA", "nodeB")
+	.addEdge("nodeB", END)
+	.compile({
+		checkpointer // 将检查点存储器和图绑定到一起了，回头图产生的检查点就会存储到绑定的checkpointer里面
+	})
 
 async function main() {
-	const stream = await graph.stream(
-		{ foo: "这是一个测试" },
-		{
-			streamMode: "updates",
-			subgraphs: true
+	const config = {
+		configurable: {
+			thread_id: "user_001"
 		}
-	)
-
-	for await (const item of stream) {
-		console.log("updates流输出的每一项")
-		console.log(item)
-		console.log("---------------------")
 	}
+
+	await graph.invoke({}, config)
+
+	// 查看最新的checkpoint
+	const snapshot = await graph.getState(config)
+
+	console.log(snapshot)
 }
 main()
