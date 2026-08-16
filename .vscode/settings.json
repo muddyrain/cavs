@@ -24,7 +24,8 @@
 		"nomic",
 		"ollama",
 		"promptfoo",
-		"promptfooconfig"
+		"promptfooconfig",
+		"serde"
 	],
 	"[javascriptreact]": {
 		"editor.defaultFormatter": "vscode.typescript-language-features"

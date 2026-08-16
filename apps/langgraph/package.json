@@ -15,8 +15,10 @@
     "@langchain/core": "^1.1.8",
     "@langchain/langgraph": "^1.0.7",
     "@langchain/openai": "^1.2.0",
+    "@types/readline-sync": "^1.4.8",
     "dotenv": "^17.2.3",
     "langchain": "^1.2.3",
+    "mongodb": "^7.5.0",
     "readline-sync": "^1.4.10",
     "zod": "^4.2.1"
   },

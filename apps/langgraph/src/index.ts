@@ -3,8 +3,10 @@ import { BaseMessage, HumanMessage } from "@langchain/core/messages"
 import { END, MemorySaver, MessagesZodMeta, START, StateGraph } from "@langchain/langgraph"
 import { registry } from "@langchain/langgraph/zod"
 import { ChatOpenAI } from "@langchain/openai"
+import { MongoClient } from "mongodb"
 import readline from "readline-sync"
 import { z } from "zod/v4"
+import { MongoSaver } from "./MongoSaver.ts"
 
 // 用户系统
 const users = {
@@ -38,7 +40,13 @@ async function chatNode(state: TState): Promise<Partial<TState>> {
 	}
 }
 
-const checkpointer = new MemorySaver()
+// const checkpointer = new MemorySaver()
+// 切换成自定义的mongodb的checkpointer
+const client = new MongoClient("mongodb://localhost:27017")
+await client.connect()
+const db = client.db("graphmongodb")
+const collection = db.collection("checkpoints")
+const checkpointer = new MongoSaver(collection)
 
 // 图
 const graph = new StateGraph(Schema)
