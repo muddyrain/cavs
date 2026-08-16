@@ -4,27 +4,35 @@ import pLimit from "p-limit";
 export class NomicEmbeddings extends Embeddings {
 	constructor(concurrency = 3) {
 		super()
-		this.model = "nomic-embed-text"
-		this.apiUrl = "http://localhost:11434/api/embeddings"
+		this.model = "Qwen/Qwen3-VL-Embedding-8B"
+		this.apiUrl = "https://api.siliconflow.cn/v1/embeddings"
+		this.apiKey = process.env.SILICONFLOW_API_KEY || process.env.OPENAI_API_KEY
 		this.concurrency = concurrency
 		this.limit = pLimit(concurrency)
 	}
 
 	/**
-	 * 对单个文本做嵌入操作，这是一个内部方法
-	 * @param {*} text 单个文本
+	 * 内部方法，调用硅基流动嵌入 API
+	 * @param {string} text 单个文本
 	 */
 	async #fetchEmbedding(text) {
 		const res = await fetch(this.apiUrl, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${this.apiKey}`,
+			},
 			body: JSON.stringify({
 				model: this.model,
-				prompt: text
+				input: text
 			})
 		})
-		const result = await res.json()
-		return result.embedding
+		if (!res.ok) {
+			const errText = await res.text().catch(() => "")
+			throw new Error(`嵌入操作失败: ${res.status} ${errText}`)
+		}
+		const data = await res.json()
+		return data.data[0].embedding
 	}
 
 	/**

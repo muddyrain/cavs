@@ -1,46 +1,43 @@
+try { require("dotenv").config(); } catch (_) { }
 const { runWithConcurrency } = require("../utils/utils.js");
 const { Embeddings } = require("@langchain/core/embeddings");
 
-class NomicEmbeddings extends Embeddings {
+class SiliconFlowEmbeddings extends Embeddings {
   constructor(concurrency = 3) {
     super();
-    // this.model = "nomic-embed-text";
-    this.model = "nomic-embed-text"; // 嵌入模型
-    this.apiUrl = "http://localhost:11434/api/embed";
+    this.model = "Qwen/Qwen3-VL-Embedding-8B";
+    this.apiUrl = "https://api.siliconflow.cn/v1/embeddings";
+    this.apiKey = process.env.SILICONFLOW_API_KEY || process.env.OPENAI_API_KEY;
     this.concurrency = concurrency;
   }
 
   /**
-   * 内部方法，用于调用嵌入模型做嵌入操作
-   * @param {*} text 要做嵌入的文本内容
-   * @returns
+   * 内部方法，调用硅基流动嵌入 API
+   * @param {string|string[]} input 要做嵌入的文本内容
+   * @returns {Promise<number[][]>}
    */
-  async #fetchEmbedding(text) {
+  async #fetchEmbedding(input) {
     const res = await fetch(this.apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: this.model, input: text }),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({ model: this.model, input }),
     });
-    if (!res.ok) throw new Error(`嵌入操作失败☹️: ${res.status}`);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`嵌入操作失败: ${res.status} ${errText}`);
+    }
     const data = await res.json();
-    console.log("embedding response>>>", data)
-    return data.embeddings[0];
+    return data.data.map((item) => item.embedding);
   }
 
-  /**
-   * 单个文本做嵌入操作
-   * @param {*} text
-   * @returns
-   */
   async embedQuery(text) {
-    return await this.#fetchEmbedding(text);
+    const [embedding] = await this.#fetchEmbedding(text);
+    return embedding;
   }
 
-  /**
-   * 多个文本做嵌入操作
-   * @param {*} texts
-   * @returns
-   */
   async embedDocuments(texts) {
     const results = Array.from({ length: texts.length });
 
@@ -48,7 +45,8 @@ class NomicEmbeddings extends Embeddings {
       texts,
       async (text, idx) => {
         try {
-          results[idx] = await this.#fetchEmbedding(text);
+          const [embedding] = await this.#fetchEmbedding(text);
+          results[idx] = embedding;
         } catch (e) {
           results[idx] = e;
         }
@@ -61,5 +59,6 @@ class NomicEmbeddings extends Embeddings {
 }
 
 module.exports = {
-  NomicEmbeddings,
+  NomicEmbeddings: SiliconFlowEmbeddings,
+  SiliconFlowEmbeddings,
 };

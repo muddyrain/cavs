@@ -4,7 +4,7 @@ import { END, InMemoryStore, MemorySaver, START, StateGraph } from "@langchain/l
 import { ChatOpenAI } from "@langchain/openai"
 import readline from "readline-sync"
 import { z } from "zod"
-import { model } from "./model.ts"
+import { embeddings, model } from "./model.ts"
 
 // 图的状态结构，里面只有一项，消息
 const StateSchema = z.object({
@@ -14,7 +14,12 @@ const StateSchema = z.object({
 // 根据Schema生成对应的ts类型
 type TState = z.infer<typeof StateSchema>
 
-const store = new InMemoryStore() // 做长期记忆
+const store = new InMemoryStore({
+	index: {
+		embeddings: embeddings,
+		dims: 1024
+	}
+}) // 做长期记忆
 const checkpointer = new MemorySaver() // 做短期记忆
 
 // 节点函数 - 聊天
@@ -44,16 +49,22 @@ async function chatNode(state: TState, config: any): Promise<Partial<TState>> {
     ]
    * 
    */
+	// 将当前用户的输入和长期记忆的向量做一个匹配，找出匹配度最高的3条
+	const lastMsg = state.messages.at(-1)
 
-	const memories = await store.search(namespace, {})
-	console.log("memories>>>", memories)
+	const lastUserMsg = typeof lastMsg?.content === "string" ? lastMsg.content : ""
+
+	// 这里在进行搜索的时候，不再是精确匹配，而是根据向量相似度来进行匹配
+	const memories = await store.search(namespace, {
+		query: lastUserMsg,
+		limit: 3
+	})
+
+	// console.log("memories>>>", memories);
 	// 取出记忆的内容，组装成一个字符串
 	// "我叫张三。\n 我喜欢编程。"
-
 	const memoryText = memories?.map((m) => m.value.data).join("\n") || ""
-
 	// console.log("memoryText>>>", memoryText);
-
 	// 提示词
 	const systemPrompt = `
 你是一个持续与用户聊天的助手。
@@ -67,12 +78,6 @@ ${memoryText || "（暂无）"}
 		...state.messages
 	])
 
-	// 现在我们其实已经有了模型的回复
-	// 先不着急推入到 messages 里面
-	// 先把用户发的消息取出来，判断用户发的消息是否需要存储到长期记忆里面
-	const lastMsg = state.messages.at(-1) // 取出最后一条内容（用户发的）
-	const lastUserMsg = typeof lastMsg?.content === "string" ? lastMsg.content : ""
-
 	// 需要判断是否有存储到长期记忆里面的必要
 	if (shouldSaveToMemory(lastUserMsg)) {
 		// 如果进入此分支，说明要做长期记忆
@@ -84,6 +89,7 @@ ${memoryText || "（暂无）"}
 				data: memory
 			})
 			console.log("🧠 [长期记忆已保存]:", memory)
+			console.log("memories>>>", memories)
 		}
 	}
 
