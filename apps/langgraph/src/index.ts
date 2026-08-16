@@ -1,12 +1,12 @@
 import "dotenv/config"
-import { BaseMessage, HumanMessage } from "@langchain/core/messages"
-import { END, MemorySaver, MessagesZodMeta, START, StateGraph } from "@langchain/langgraph"
-import { registry } from "@langchain/langgraph/zod"
-import { ChatOpenAI } from "@langchain/openai"
-import { MongoClient } from "mongodb"
+import { HumanMessage } from "@langchain/core/messages"
+import { END, MemorySaver, START, StateGraph } from "@langchain/langgraph"
+
 import readline from "readline-sync"
-import { z } from "zod/v4"
-import { MongoSaver } from "./MongoSaver.ts"
+import { SUMMARY_THRESHOLD } from "./config.ts"
+import { model } from "./model.ts"
+import { Schema, type TState } from "./state.ts"
+import { summarizeNode } from "./summarizeNode.ts"
 
 // 用户系统
 const users = {
@@ -14,45 +14,27 @@ const users = {
 	bbb: { password: "222", thread_id: "thread-bbb" }
 }
 
-const Schema = z.object({
-	messages: z.array(z.custom<BaseMessage>()).register(registry, {
-		...MessagesZodMeta,
-		default: () => []
-	})
-})
-
-type TState = z.infer<typeof Schema>
-
-const model = new ChatOpenAI({
-	model: "gpt-5.6-luna",
-	temperature: 0.5,
-	configuration: {
-		baseURL: "https://api.amux.ai/v1"
-	}
-})
-
 // 聊天的节点
 async function chatNode(state: TState): Promise<Partial<TState>> {
 	const res = await model.invoke(state.messages)
 
 	return {
-		messages: [res]
+		messages: [...state.messages, res]
 	}
 }
 
-// const checkpointer = new MemorySaver()
-// 切换成自定义的mongodb的checkpointer
-const client = new MongoClient("mongodb://localhost:27017")
-await client.connect()
-const db = client.db("graphmongodb")
-const collection = db.collection("checkpoints")
-const checkpointer = new MongoSaver(collection)
+const checkpointer = new MemorySaver()
 
 // 图
 const graph = new StateGraph(Schema)
 	.addNode("chatNode", chatNode)
+	.addNode("summarizeNode", summarizeNode)
 	.addEdge(START, "chatNode")
-	.addEdge("chatNode", END)
+	.addConditionalEdges("chatNode", (state: TState) => {
+		if (state.messages.length > SUMMARY_THRESHOLD) return "summarizeNode"
+		return END
+	})
+	.addEdge("summarizeNode", END)
 	.compile({ checkpointer })
 
 async function main() {
@@ -87,18 +69,23 @@ async function main() {
 				break
 			}
 
-			// 这里只需要传入当前这一轮的输入消息
+			// 这里获取到的最新的状态
+			// messages里面是包含了所有的信息的
+			// stateSnapshot ->
+			// { values: { messages: [HumanMessage("hello"), AIMessage("hi")] }, config: { thread_id: "thread-aaa" }, ... }
+			const stateSnapshot = await graph.getState(config)
+			const currentMessages = stateSnapshot.values.messages || []
+
 			const result = await graph.invoke(
 				{
-					messages: [new HumanMessage(input)]
+					// 之前的状态 + 这一次用户的输入
+					messages: [...currentMessages, new HumanMessage(input)]
 				},
 				config
 			)
 
-			// 返回的结果就是完整的状态
-			const aiMsg = result.messages.at(-1)
-
-			console.log(`AI> ${aiMsg?.content}`)
+			const aiMesg = result.messages.at(-1)
+			console.log(aiMesg?.content)
 		}
 	}
 }
