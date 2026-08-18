@@ -1,4 +1,4 @@
-try { require("dotenv").config(); } catch (_) { }
+try { require("dotenv").config(); } catch (_) {}
 const { runWithConcurrency } = require("../utils/utils.js");
 const { Embeddings } = require("@langchain/core/embeddings");
 

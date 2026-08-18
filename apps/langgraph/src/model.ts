@@ -2,10 +2,10 @@ import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai"
 import "dotenv/config"
 
 export const model = new ChatOpenAI({
-	model: "gpt-5.6-luna",
+	model: "gpt-5.6-terra",
 	temperature: 0.5,
 	configuration: {
-		baseURL: "https://api.amux.ai/v1"
+		baseURL: "https://api.shuaiapi.com/v1"
 	}
 })
 

@@ -1,165 +1,109 @@
-import "dotenv/config"
-import { BaseMessage, HumanMessage } from "@langchain/core/messages"
-import { END, InMemoryStore, MemorySaver, START, StateGraph } from "@langchain/langgraph"
+import { END, START, StateGraph } from "@langchain/langgraph"
 import { ChatOpenAI } from "@langchain/openai"
-import readline from "readline-sync"
-import { z } from "zod"
-import { embeddings, model } from "./model.ts"
+import readlineSync from "readline-sync"
+import { z } from "zod/v4"
+import "dotenv/config"
+import { model } from "./model.ts"
 
-// 图的状态结构，里面只有一项，消息
-const StateSchema = z.object({
-	messages: z.array(z.custom<BaseMessage>())
+// 图的状态
+const Schema = z.object({
+	subject: z.string().default("").describe("邮件主题"),
+	message: z.string().default("").describe("邮件内容"),
+	feedback: z.string().default("").describe("反馈")
 })
 
-// 根据Schema生成对应的ts类型
-type TState = z.infer<typeof StateSchema>
+// 根据Schema生成的ts类型
+type TState = z.infer<typeof Schema>
 
-const store = new InMemoryStore({
-	index: {
-		embeddings: embeddings,
-		dims: 1024
-	}
-}) // 做长期记忆
-const checkpointer = new MemorySaver() // 做短期记忆
+// 节点：1. 写邮件的节点  2. 用户审查节点  3. 发送邮件
+async function writeEmail(state: TState) {
+	console.log("AI: 正在生成/修改邮件内容...")
 
-// 节点函数 - 聊天
-async function chatNode(state: TState, config: any): Promise<Partial<TState>> {
-	// 1. 从长期记忆里面获取信息
-	// 2. 和大模型进行交流 - 会把长期记忆的信息带过去
-	// 3. 判断新的这一轮会话，有没有信息需要存入到长期记忆里面
-	const userId = config.configurable.userId
-	const namespace = ["user_profile", userId]
-
-	// 取出长期记忆
-	// 记忆里面如果有东西：
-	/**
-   * [
-      {
-        key: "xxxx",  
-        value: {
-          data: "我叫张三。"  // 记忆内容
-        }
-      },
-      {
-        key: "xxxx",  
-        value: {
-          data: "我喜欢编程。"  // 另一条记忆内容
-        }
-      }
-    ]
-   * 
-   */
-	// 将当前用户的输入和长期记忆的向量做一个匹配，找出匹配度最高的3条
-	const lastMsg = state.messages.at(-1)
-
-	const lastUserMsg = typeof lastMsg?.content === "string" ? lastMsg.content : ""
-
-	// 这里在进行搜索的时候，不再是精确匹配，而是根据向量相似度来进行匹配
-	const memories = await store.search(namespace, {
-		query: lastUserMsg,
-		limit: 3
-	})
-
-	// console.log("memories>>>", memories);
-	// 取出记忆的内容，组装成一个字符串
-	// "我叫张三。\n 我喜欢编程。"
-	const memoryText = memories?.map((m) => m.value.data).join("\n") || ""
-	// console.log("memoryText>>>", memoryText);
 	// 提示词
-	const systemPrompt = `
-你是一个持续与用户聊天的助手。
-以下是你已知的用户长期信息（如果有）：
-${memoryText || "（暂无）"}
-`
+	const lines: string[] = [
+		"你是一个专业的中文邮件撰写助手。",
+		"请用自然、礼貌、简洁的中文撰写邮件正文。",
+		"只输出邮件正文内容本身，不要输出额外的解释说明。"
+	]
 
-	// 和大模型进行交流
-	const response = await model.invoke([
-		{ role: "system", content: systemPrompt }, // 系统设定
-		...state.messages
-	])
-
-	// 需要判断是否有存储到长期记忆里面的必要
-	if (shouldSaveToMemory(lastUserMsg)) {
-		// 如果进入此分支，说明要做长期记忆
-		// 需要做一个信息的提取
-		const memory = extractMemory(lastUserMsg)
-		if (memory) {
-			// 提取到信息了，存
-			await store.put(namespace, crypto.randomUUID(), {
-				data: memory
-			})
-			console.log("🧠 [长期记忆已保存]:", memory)
-			console.log("memories>>>", memories)
-		}
+	if (!state.message || !state.feedback) {
+		// 说明是初次生成邮件内容，当前只有主题
+		lines.push(`邮件主题：${state.subject}`)
+		lines.push("请根据以上主题撰写第一版邮件正文。")
+	} else if (state.feedback !== "approve") {
+		// 说明有修改意见，需要根据上一版的正文 + 用户的反馈意见来进行修改
+		lines.push("下面是上一版邮件正文：")
+		lines.push(state.message)
+		lines.push("下面是用户给出的修改意见：")
+		lines.push(state.feedback)
+		lines.push(
+			"请严格根据修改意见，在保留合理内容的前提下，重写一封新的邮件正文，只输出修改后的完整邮件内容。"
+		)
 	}
+
+	const pt = lines.join("\n")
+
+	const result = await model.invoke(pt)
+
+	const content =
+		typeof result.content === "string" ? result.content : JSON.stringify(result.content)
 
 	return {
-		messages: [...state.messages, response]
+		message: content
 	}
 }
 
-function shouldSaveToMemory(text: string): boolean {
-	// 定义一组关键字，如果用户说的话包含这些关键词，就认为是个人信息
-	const keywords = ["我是", "我叫", "我在", "我的工作", "我喜欢", "记住"]
-	return keywords.some((k) => text.includes(k))
+async function humanReview(state: TState) {
+	// 先将模型生成的邮件内容显示出来
+	console.log("\n===== 当前 AI 生成的邮件内容 =====\n")
+	console.log(state.message)
+	console.log("\n系统: 等待人类审核...\n")
+
+	const input = readlineSync.question("是否发送？请输入 'approve' 表示发送，或输入你的修改意见：")
+
+	console.log(`\n\n用户的反馈为：${input}`)
+
+	return {
+		feedback: input
+	}
 }
 
-function extractMemory(text: string): string | null {
-	if (text.includes("我叫")) {
-		return text
-	}
-	if (text.includes("我是")) {
-		return text
-	}
-	if (text.includes("我喜欢")) {
-		return text
-	}
-	if (text.includes("我的工作是")) {
-		return text
-	}
-	return null
+function sendEmail(state: TState) {
+	console.log("\n===== 模拟发送邮件 =====")
+	const to = "demo@example.com"
+	console.log(`收件人: ${to}`)
+	console.log(`主题: ${state.subject}`)
+	console.log("正文:\n")
+	console.log(state.message)
+	console.log("\n[模拟] 邮件已发送！")
+	return {}
 }
 
-const graph = new StateGraph(StateSchema)
-	.addNode("chatNode", chatNode)
-	.addEdge(START, "chatNode")
-	.addEdge("chatNode", END)
-	.compile({
-		checkpointer, // 注入短期记忆检查点
-		store // 注入长期记忆存储
+// 构建图
+const graph = new StateGraph(Schema)
+	.addNode("writeEmail", writeEmail)
+	.addNode("humanReview", humanReview)
+	.addNode("sendEmail", sendEmail)
+	.addEdge(START, "writeEmail")
+	.addEdge("writeEmail", "humanReview")
+	.addConditionalEdges("humanReview", (state: TState) => {
+		if (state.feedback === "approve") return "sendEmail"
+		return "writeEmail"
 	})
+	.addEdge("sendEmail", END)
+	.compile()
 
 async function main() {
-	const config = {
-		configurable: {
-			userId: "bill",
-			thread_id: "bill-chat"
-		}
+	const subject = readlineSync.question("请输入邮件的主题：")
+
+	console.log("\n===== 开始：大模型根据主题生成邮件，并支持多次人工修改 =====\n")
+
+	const stream = await graph.stream({ subject })
+
+	for await (const _e of stream) {
 	}
 
-	let state: TState = {
-		messages: []
-	}
-
-	console.log("🤖 聊天开始（Ctrl+C 退出）")
-
-	while (true) {
-		// 获取用户在终端的输入
-		const input = readline.question("\n你：")
-
-		// 将用户的输入封装成 HumanMessage 对象，加入到本地状态
-		state.messages.push(new HumanMessage(input))
-
-		const result = await graph.invoke(state, config)
-
-		// console.log("result>>>", result);
-
-		const aiMsg = result.messages.at(-1)
-
-		console.log("\nAI:", aiMsg?.content)
-
-		state = result // 更新本地状态
-	}
+	console.log("\n===== 流程结束 =====")
 }
 
 main()
