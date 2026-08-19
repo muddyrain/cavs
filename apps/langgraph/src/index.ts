@@ -1,4 +1,4 @@
-import { END, START, StateGraph } from "@langchain/langgraph"
+import { Command, END, interrupt, MemorySaver, START, StateGraph } from "@langchain/langgraph"
 import { ChatOpenAI } from "@langchain/openai"
 import readlineSync from "readline-sync"
 import { z } from "zod/v4"
@@ -14,6 +14,8 @@ const Schema = z.object({
 
 // 根据Schema生成的ts类型
 type TState = z.infer<typeof Schema>
+
+let hasShownCurrentEmail = false // 是否要显示当前生成的email
 
 // 节点：1. 写邮件的节点  2. 用户审查节点  3. 发送邮件
 async function writeEmail(state: TState) {
@@ -55,13 +57,20 @@ async function writeEmail(state: TState) {
 
 async function humanReview(state: TState) {
 	// 先将模型生成的邮件内容显示出来
-	console.log("\n===== 当前 AI 生成的邮件内容 =====\n")
-	console.log(state.message)
-	console.log("\n系统: 等待人类审核...\n")
+	if (!hasShownCurrentEmail) {
+		console.log("\n===== 当前 AI 生成的邮件内容 =====\n")
+		console.log(state.message)
+		console.log("\n系统: 等待人类审核...\n")
+		hasShownCurrentEmail = true
+	}
+	// const input = readlineSync.question("是否发送？请输入 'approve' 表示发送，或输入你的修改意见：")
 
-	const input = readlineSync.question("是否发送？请输入 'approve' 表示发送，或输入你的修改意见：")
+	const input = interrupt({})
 
 	console.log(`\n\n用户的反馈为：${input}`)
+
+	// 这里代表着一轮反馈已经处理完了
+	hasShownCurrentEmail = false
 
 	return {
 		feedback: input
@@ -79,6 +88,13 @@ function sendEmail(state: TState) {
 	return {}
 }
 
+const checkpointer = new MemorySaver()
+const config = {
+	configurable: {
+		thread_id: "send-email"
+	}
+}
+
 // 构建图
 const graph = new StateGraph(Schema)
 	.addNode("writeEmail", writeEmail)
@@ -91,16 +107,48 @@ const graph = new StateGraph(Schema)
 		return "writeEmail"
 	})
 	.addEdge("sendEmail", END)
-	.compile()
+	.compile({
+		checkpointer
+	})
 
 async function main() {
 	const subject = readlineSync.question("请输入邮件的主题：")
 
 	console.log("\n===== 开始：大模型根据主题生成邮件，并支持多次人工修改 =====\n")
 
-	const stream = await graph.stream({ subject })
+	const stream = await graph.stream({ subject }, config)
 
 	for await (const _e of stream) {
+	}
+
+	// 接下来就会回到这里的主逻辑，也就意味着主逻辑继续往后面执行
+	while (true) {
+		// 不断的接受用户的反馈
+		const input = readlineSync.question("\n是否发送？输入 'approve' 表示发送；否则输入修改意见：")
+
+		console.log("\n拿到用户的输入，接下来就需要恢复图的执行\n")
+
+		const stream = await graph.stream(
+			// 恢复图的执行
+			// 注意：在恢复图的执行的时候，是将中断的那个节点函数，一整个重新执行一次
+			new Command({
+				resume: input
+			}),
+			config
+		)
+
+		for await (const _ of stream) {
+		}
+
+		if (input === "approve") {
+			// 说明上面在恢复图的执行的时候，图的执行是会结束的
+			console.log("\n===== 人类已批准，流程结束 =====\n")
+			break
+		}
+
+		// 如果没有进入上面的if，说明后面图又会重新执行一遍
+		// 图的执行同样又会中断
+		console.log("\n===== 已根据修改意见生成新版邮件，将再次进入人工审核环节 =====")
 	}
 
 	console.log("\n===== 流程结束 =====")
